@@ -144,7 +144,7 @@ class HomePage extends React.Component {
     }
 
     print(){
-        console.log(this.state);
+        console.log(this.state.authUser);
     }
 
 
@@ -171,7 +171,6 @@ this.setState({
     render() {
         return (
             <div style={styles.root}>
-                <AppBar position="static">
                 <Tabs value={0} onChange={this.handleChange}
                     indicatorColor="secondary"
                     textColor="primary"
@@ -181,7 +180,63 @@ this.setState({
                     <Tab style={styles.tabLabel} label="Hunt" />
                     <Tab style={styles.tabLabel} label="Ranking"/>
                 </Tabs>
-                </AppBar>
+
+
+                        {this.state.value === 0 && <TabContainer>
+
+<Card style={styles.card}>
+
+   <CardContent>
+
+       <Avatar  src={this.state.authUser ? this.state.authUser.photoURL : "none"}  style={styles.bigAvatar} />
+
+       <Typography variant="title" align="center">
+
+           {this.state.authUser ? this.state.authUser.displayName : "none"}
+
+       </Typography>  <br/>
+
+       <Typography variant="subheading" align="center" gutterBottom>
+
+           Ethereum address:
+
+       </Typography>
+
+       <Typography variant="body1" align="center" noWrap gutterBottom>
+
+           1Ace0e17b704A0ea258C089a60fFAf9412f4D395
+
+       </Typography> <br/>
+
+       <Typography variant="subheading" align="center" gutterBottom>
+
+           Marrocoins tokens:
+
+       </Typography>
+
+       <Typography variant="body1" align="center" gutterBottom>
+
+           70.04
+
+       </Typography> <br/>
+
+       <Button  variant="outlined" size="medium" color="primary" style={styles.showKey}> Mostrar llave privada </Button>
+
+       <Typography variant="body1" align="center" noWrap gutterBottom>
+
+           <br/>
+           bf907a8dcd5cd838c6c944eead0ea2307886d31dca77ea768d3e24a4a59ba7f3
+
+       </Typography>
+
+       <br/>
+
+       
+
+ </CardContent>
+
+</Card>
+</TabContainer>}
 
                 <h1>HomeComponent</h1>
                 <Button color="secondary" variant="contained" onClick={this.print}>
