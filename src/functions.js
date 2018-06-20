@@ -1,3 +1,5 @@
+import firebase, { provider } from './firebase/firebase';
+
 export var Web3 = require('web3');
 export var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
 export var Tx = require('ethereumjs-tx');
@@ -10,6 +12,8 @@ export var abi;
 export var ownerPub;
 export var ownerPriv;
 export var contract;
+
+export var database = firebase.database();
 
 export function getGameConfig(){
     database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
@@ -160,6 +164,13 @@ export function setInfo(path, objeto){
      );
 }
 
+export function getInfo(path){
+    database.ref(path).once('value').then(function(snapshot){
+      var info = (snapshot.val());
+      return info;
+    });
+}
+
 export function setAccountInfo(uid){
   database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
@@ -237,7 +248,7 @@ export function callContractMethod(contractFunction, methType){
 }
 
 export function gradeAnswer(answerUsuario, spot, time, distance){
-	var answerCorrecta = getGameInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
+	var answerCorrecta = getInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
 	if(answerUsuario===answerCorrecta){
 		reward(time, distance)
 	}

@@ -24,6 +24,7 @@ import firebase, { provider } from '../firebase/firebase';
 import { auth, googleProvider } from '../firebase/firebase.js';
 import * as functions from '../functions.js';
 
+const accent = "555"
 
 const styles = {
 
