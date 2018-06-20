@@ -80,6 +80,10 @@ const styles = {
         width: "180",
         padding: "5px",
         marginLeft: "calc(50% - 90px)",
+    },
+    tabscolor: {
+        marginTop: "-2px",
+        backgroundColor: "#4054B2",
     }
 
 }
@@ -233,6 +237,7 @@ class HomePage extends React.Component {
                 <Tabs value={value} onChange={this.handleChange}
                   indicatorColor="secondary"
                   textColor="primary"
+                  style={styles.tabscolor}
                   centered>
                   <Tab style={styles.tabLabel} label="Profile" />
                   <Tab style={styles.tabLabel} label="Hunt" />
