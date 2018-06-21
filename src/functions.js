@@ -151,6 +151,15 @@ export function setInfo(path, objeto){
      );
 }
 
+export function setAccountInfo(uid){
+  database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
+    var info = (snapshot.val());
+    console.log(info);
+    account = info.pubKey;
+    key = new Buffer(info.privKey.substring(2), 'hex');
+  })
+}
+
 export  function ordenEstaciones(n){
     var arr = []
     while(arr.length < n){
@@ -224,7 +233,7 @@ export function callContractMethod(contractFunction, methType){
 }
 
 export function gradeAnswer(answerUsuario, spot, time, distance){
-	var answerCorrecta = getGameInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');  
+	var answerCorrecta = getGameInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
 	if(answerUsuario===answerCorrecta){
 		reward(time, distance)
 	}
@@ -233,4 +242,4 @@ export function gradeAnswer(answerUsuario, spot, time, distance){
 export function reward(time, distance){
     const reward = contract.methods.recompensa(time, distance);
     callContractMethod(reward);
-} 
+}
