@@ -247,8 +247,8 @@ class HomePage extends React.Component {
         }
 
 
-        submitAnswer = {
-
+        submitAnswer() {
+            console.log(getElementById("textBox").innerHTML);
         }
 
         state = {
@@ -413,6 +413,7 @@ class HomePage extends React.Component {
 
 
                                 <Input
+                                    id="textBox"
                                     centered
                                     placeholder="Código"
                                     style={styles.input}
