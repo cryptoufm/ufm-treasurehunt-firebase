@@ -194,11 +194,6 @@ export function buyHint2(){
     callContractMethod(buyHint2,"hint2");
 }
 
-export function reward(time, distance){
-    const reward = contract.methods.recompensa(time, distance);
-    callContractMethod(reward,"reward");
-}
-
 export function callContractMethod(contractFunction, methType){
 
     const functionAbi = contractFunction.encodeABI();
