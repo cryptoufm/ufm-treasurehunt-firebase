@@ -1,3 +1,7 @@
+export var Web3 = require('web3');
+export var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
+export var Tx = require('ethereumjs-tx');
+
 export function getGameConfig(){
     database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
       var data = snapshot.val();
