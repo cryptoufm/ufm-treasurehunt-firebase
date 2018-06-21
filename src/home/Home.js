@@ -25,7 +25,6 @@ import { auth, googleProvider } from '../firebase/firebase.js';
 
 const accent = "555"
 const styles = {
-
     root: {
         flexGrow: 1,
     },
@@ -59,6 +58,7 @@ const styles = {
     popover: {
         margin: "15px",
     },
+    
     // DEF CLASSES
     showKey: {
         width: "200px",
@@ -99,7 +99,6 @@ const styles = {
         marginLeft: "calc(50% - 100px)",
         color: '#de1616',
     },
-
 }
 var Web3 = require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
@@ -121,17 +120,14 @@ function TabContainer(props) {
         </Typography>
     );
 }
-
 TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
-
 let id = 0;
 function createData(name, tokens) {
   id += 1;
   return { id, name, tokens };
 }
-
 const data = [
   createData('User1', 3002),
   createData('User2', 2342),
@@ -143,7 +139,6 @@ const data = [
   createData('User8', 2342),
   createData('User9', 5324),
 ];
-
 getGameConfig();
 
 class HomePage extends React.Component {
