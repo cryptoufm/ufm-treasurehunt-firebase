@@ -64,6 +64,13 @@ const styles = {
   pos: {
     marginBottom: 12,
   },
+  loginButton: {
+      width: "200px",
+      padding: "5px",
+      marginLeft: "calc(50% - 100px)",
+      backgroundColor: "#de1616",
+      color: "#fff"
+  },
 
 }
 
@@ -212,7 +219,7 @@ class LandingPage extends Component {
                                    onClick={this.handleNext}
                                    className={styles.button}
                                  >
-                                   {activeStep === steps.length - 1 ? 'Login' : 'Siguiente'}
+                                   {activeStep === steps.length - 1 ? 'Comenzar' : 'Siguiente'}
                                  </Button>
                                </div>
                              </div>
@@ -223,11 +230,12 @@ class LandingPage extends Component {
                    </Stepper>
                    {activeStep === steps.length && (
                      <Paper square elevation={0} className={styles.resetContainer}>
-                       <Typography>All steps completed - you&quot;re finished</Typography>
-                       <Button onClick={this.login} className={styles.button}>
+                       <Button variant="contained" onClick={this.login} style={styles.loginButton}>
                          Log In
                        </Button>
+                       <br/><br/>
                      </Paper>
+
                    )}
                  </div>
 
