@@ -38,7 +38,7 @@ const styles = {
         margin: 15,
         marginLeft: "calc(50% - 50px)",
         border: "solid",
-        borderColor: "#F2105A",
+        borderColor: "#de1616",
     },
     card: {
         // maxWidth: '600px',
@@ -51,7 +51,7 @@ const styles = {
     },
     tabLabel: {
         width: "33%",
-        color: "#eee",
+        color: "#fff",
     },
     font: {
         font: "roboto",
@@ -92,6 +92,12 @@ const styles = {
       backgroundColor: '#de1616',
       //color: '#de1616',
       //fontColor: '#ffffff',
+    },
+    showKey2: {
+        width: "200px",
+        padding: "5px",
+        marginLeft: "calc(50% - 100px)",
+        color: '#de1616',
     },
 
 }
@@ -243,8 +249,7 @@ class HomePage extends React.Component {
 
 
                 <Tabs value={value} onChange={this.handleChange}
-                  indicatorColor="secondary"
-                  textColor="primary"
+                  indicatorColor="accent"
                   style={styles.tabscolor}
                   centered>
                   <Tab style={styles.tabLabel} label="Profile" />
@@ -293,7 +298,7 @@ class HomePage extends React.Component {
 
                            </Typography> <br/>
 
-                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey}> Mostrar llave privada </Button>
+                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2}> Mostrar llave privada </Button>
 
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
