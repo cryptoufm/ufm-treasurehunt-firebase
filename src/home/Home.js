@@ -248,7 +248,7 @@ class HomePage extends React.Component {
 
 
         submitAnswer() {
-            console.log(getElementById("textBox").innerHTML);
+            console.log(document.getElementById("textBox").value);
         }
 
         state = {
