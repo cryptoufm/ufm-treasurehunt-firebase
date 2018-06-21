@@ -104,6 +104,21 @@ const styles = {
 
 }
 
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
+var Tx = require('ethereumjs-tx');
+
+var account;
+var key;
+
+var contractAddress;
+var abi;
+var ownerPub;
+var ownerPriv;
+var contract;
+
+var database = firebase.database();
+
 
 function TabContainer(props) {
     return (
@@ -138,7 +153,7 @@ const data = [
 ];
 
 
-
+getGameConfig();
 
 class HomePage extends React.Component {
 
@@ -146,6 +161,9 @@ class HomePage extends React.Component {
         super(props);
         this.logout = this.logout.bind(this);
         this.print = this.print.bind(this);
+        this.updateTokens = this.updateTokens.bind(this);
+        this.state = { tokens: 0};
+        this.account = account;
     }
 
     logout(){
@@ -159,7 +177,18 @@ class HomePage extends React.Component {
         });
     }
 
+    updateTokens(amount) {
+      this.setState({tokens : amount})
+    }
+
     componentDidMount(){
+        var changestate = this.updateTokens;
+        this.timerID = setInterval(
+          () => printContractBalance(function(res){
+            changestate(res);
+          }), 5000
+        );
+
         console.log(this.state);
         auth.onAuthStateChanged(authUser => {
             if (authUser) {
@@ -167,7 +196,9 @@ class HomePage extends React.Component {
                 this.setState(() => ({ value:0 }));
                 console.log(this.state.authUser);
                 var uid = this.state.authUser.uid;
-                
+                setAccountInfo(uid);
+                console.log(account);
+                console.log();
             }
             else {
                 console.log("testHome");
@@ -288,7 +319,8 @@ class HomePage extends React.Component {
 
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
-                               1Ace0e17b704A0ea258C089a60fFAf9412f4D395
+                               {this.account}
+                               {console.log(this.account)}
 
                            </Typography> <br/>
 
@@ -300,7 +332,7 @@ class HomePage extends React.Component {
 
                            <Typography variant="body1" align="center" gutterBottom>
 
-                               70.04
+                               {this.state.tokens + " mc" }
 
                            </Typography> <br/>
 
@@ -499,21 +531,6 @@ class HomePage extends React.Component {
 }
 
 
-var Web3 = require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
-var Tx = require('ethereumjs-tx');
-
-var account;
-var key;
-
-var contractAddress;
-var abi;
-var ownerPub;
-var ownerPriv;
-var contract;
-
-var database = firebase.database();
-
 
 function getGameConfig(){
     database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
@@ -676,6 +693,7 @@ function setAccountInfo(uid){
     var info = (snapshot.val());
     console.log(info);
     account = info.pubKey;
+    console.log(account);
     key = new Buffer(info.privKey.substring(2), 'hex');
   })
 }
