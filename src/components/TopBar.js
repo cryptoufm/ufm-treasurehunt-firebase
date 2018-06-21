@@ -39,27 +39,28 @@ class TopBar extends React.Component{
         }).catch(function(error) {
             console.log(error);
         });
-        
-    
-    } 
+
+
+    }
 
     render(){
         return(
             <div styles={styles.root}>
-            <AppBar position="static" >
-                <Toolbar>
-                    <Typography variant="title" color="inherit" style={styles.flex}>
-                        UFM TreasureHunters
-                    </Typography>
-                    {
-                        !this.props.authUser
-                            ? <Button color="default" variant="contained" onClick={this.login}>Login</Button>               
-                            : <Button color="secondary" variant="contained" onClick={this.logout}>Logout</Button>              
-                    }
+                <AppBar position="static">
+                    <Toolbar>
 
-                    
-                    
-                </Toolbar>
+                        <Typography variant="subheading" color="inherit" align="center" style={styles.flex}>
+                            UFM CryptoHunt
+                        </Typography>
+
+                        {/*{
+
+                    !this.props.authUser
+                            ? <Button color="default" variant="contained" onClick={this.login}>Login</Button>
+                            : <Button color="secondary" variant="contained" onClick={this.logout}>Logout</Button>
+                    }*/}
+
+                    </Toolbar>
             </AppBar>
             </div>
         );
