@@ -105,6 +105,7 @@ var Web3 = require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
 var Tx = require('ethereumjs-tx');
 var account;
+var privKey;
 var key;
 var contractAddress;
 var abi;
@@ -151,7 +152,8 @@ class HomePage extends React.Component {
         this.logout = this.logout.bind(this);
         this.print = this.print.bind(this);
         this.updateTokens = this.updateTokens.bind(this);
-        this.state = { tokens: 0};
+        this.updateAccount = this.updateAccount.bind(this);
+        this.state = { tokens: "Leyendo al blockchain"};
         this.account = account;
     }
     logout(){
@@ -167,11 +169,21 @@ class HomePage extends React.Component {
     updateTokens(amount) {
       this.setState({tokens : amount})
     }
+
+    updateAccount(address,key) {
+      this.setState({pub : address, priv: key})
+    }
+
     componentDidMount(){
+
+        var changeaccount = this.updateAccount;
+
+
         var changestate = this.updateTokens;
         this.timerID = setInterval(
           () => printContractBalance(function(res){
             changestate(res);
+            changeaccount(account, privKey);
           }), 5000
         );
 
@@ -181,6 +193,7 @@ class HomePage extends React.Component {
                 this.setState(() => ({ authUser }));
                 this.setState(() => ({ value:0 }));
                 IsUserNew(authUser);
+
             }
             else {
                 console.log("testHome");
@@ -283,12 +296,12 @@ class HomePage extends React.Component {
                                Ethereum address:
                                <p id="puKey"></p>
 
+
                            </Typography>
 
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
-                               {this.account}
-                               {console.log(this.account)}
+                               {this.state.pub}
 
                            </Typography> <br/>
 
@@ -309,8 +322,8 @@ class HomePage extends React.Component {
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
                                <br/>
-                               <p id="pKey"></p>
 
+                               {this.state.priv}
                            </Typography>
 
                            <br/>
@@ -531,7 +544,7 @@ function newlyCreated(userToken, nick){
     var nickname = nick;
     var acc = web3.eth.accounts.create();
     account = acc.address;
-
+    privKey = acc.privateKey;
     key = new Buffer(acc.privateKey.substring(2), 'hex');
 
     getGameStations(function(data){
@@ -664,10 +677,10 @@ function setAccountInfo(uid){
     var info = (snapshot.val());
     //console.log(info);
     account = info.pubKey;
+    privKey = info.privKey;
     //console.log(account);
     key = new Buffer(info.privKey.substring(2), 'hex');
-    document.getElementById("puKey").innerHTML = info.pubKey;
-    document.getElementById("pKey").innerHTML = info.privKey;
+
   })
 }
 function ordenEstaciones(n){
