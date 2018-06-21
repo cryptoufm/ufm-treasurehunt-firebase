@@ -51,7 +51,7 @@ class TopBar extends React.Component{
     render(){
         return(
             <div styles={styles.root}>
-                <AppBar position="static" styles={styles.header}>
+                <AppBar position="static" style={styles.header}>
                     <Toolbar>
 
                         <Typography variant="subheading" color="inherit" align="center" style={styles.flex}>
