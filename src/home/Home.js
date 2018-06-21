@@ -194,11 +194,7 @@ class HomePage extends React.Component {
             if (authUser) {
                 this.setState(() => ({ authUser }));
                 this.setState(() => ({ value:0 }));
-                console.log(this.state.authUser);
-                var uid = this.state.authUser.uid;
-                setAccountInfo(uid);
-                console.log(account);
-                console.log();
+                IsUserNew(authUser);
             }
             else {
                 console.log("testHome");
@@ -314,6 +310,7 @@ class HomePage extends React.Component {
                            <Typography variant="subheading" align="center" gutterBottom>
 
                                Ethereum address:
+                               <p id="puKey"></p>
 
                            </Typography>
 
@@ -341,7 +338,7 @@ class HomePage extends React.Component {
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
                                <br/>
-                               bf907a8dcd5cd838c6c944eead0ea2307886d31dca77ea768d3e24a4a59ba7f3
+                               <p id="pKey"></p>
 
                            </Typography>
 
@@ -561,10 +558,10 @@ function printBalance() {
     return wei;
 }
 
-function newlyCreated(){
+function newlyCreated(userToken, nick){
     console.log("jalando funcion");
-    var uid = "DYrvUE5nwBRpaRoK62yOlYcPZmf1"
-    var nickname = "JLLopez"
+    var uid = userToken;
+    var nickname = nick;
     var acc = web3.eth.accounts.create();
     account = acc.address;
 
@@ -635,7 +632,19 @@ function getSpotOrder(data){
     );
     return spotList;
 }
-
+function IsUserNew(user){
+    database.ref('ufm-demo/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
+      console.log(snapshot.val());
+      if(snapshot.val()==null){
+        console.log("creando usuario");
+        newlyCreated(user['uid'], user['displayName']);
+      }
+      else{
+        console.log("usuario ya creado");
+        setAccountInfo(user['uid']);
+      }
+    });
+}
 function firstEth(callback){
 
     let estimatedGas;
@@ -691,10 +700,12 @@ function getInfo(path){
 function setAccountInfo(uid){
   database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
-    console.log(info);
+    //console.log(info);
     account = info.pubKey;
-    console.log(account);
+    //console.log(account);
     key = new Buffer(info.privKey.substring(2), 'hex');
+    document.getElementById("puKey").innerHTML = info.pubKey;
+    document.getElementById("pKey").innerHTML = info.privKey;
   })
 }
 
