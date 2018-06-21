@@ -196,7 +196,7 @@ class LandingPage extends Component {
                          <Step key={label}>
                            <StepLabel>{label}</StepLabel>
                            <StepContent>
-                             <Typography>{getStepContent(index)}</Typography>
+                             <Typography  align="justify">{getStepContent(index)}</Typography> <br/>
                              <div className={styles.actionsContainer}>
                                <div>
                                  <Button

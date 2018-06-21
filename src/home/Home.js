@@ -83,7 +83,7 @@ const styles = {
     },
     tabscolor: {
         marginTop: "-2px",
-        backgroundColor: "#4054B2",
+        backgroundColor: "#de1616",
     }
 
 }
