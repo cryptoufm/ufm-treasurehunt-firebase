@@ -22,7 +22,7 @@ import history from '../history';
 import * as routes from '../constants/routes';
 import firebase, { provider } from '../firebase/firebase';
 import { auth, googleProvider } from '../firebase/firebase.js';
-import * as functions from './functions.js';
+import * as functions from '../functions.js';
 
 
 const styles = {
