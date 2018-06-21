@@ -71,6 +71,11 @@ const styles = {
       backgroundColor: "#de1616",
       color: "#fff"
   },
+  buttons:{
+    backgroundColor: '#de1616',
+    //color: '#de1616',
+    //fontColor: '#ffffff',
+  },
 
 }
 
@@ -213,7 +218,7 @@ class LandingPage extends Component {
                                  >
                                    Atrás
                                  </Button>
-                                 <Button
+                                 <Button style={styles.buttons}
                                    variant="contained"
                                    color="primary"
                                    onClick={this.handleNext}

@@ -84,7 +84,15 @@ const styles = {
     tabscolor: {
         marginTop: "-2px",
         backgroundColor: "#de1616",
-    }
+    },
+    buttons:{
+      width: "200px",
+      padding: "5px",
+      marginLeft: "calc(50% - 100px)",
+      backgroundColor: '#de1616',
+      //color: '#de1616',
+      //fontColor: '#ffffff',
+    },
 
 }
 
@@ -296,7 +304,7 @@ class HomePage extends React.Component {
 
                            <br/>
 
-                           <Button variant="contained" size="medium" color="primary" style={styles.showKey} onClick={this.logout}> Log Out </Button>  <br/> <br/>
+                           <Button variant="contained" size="medium" color="primary" style={styles.buttons} onClick={this.logout}> Log Out </Button>  <br/> <br/>
 
                      </CardContent>
 
@@ -374,7 +382,7 @@ class HomePage extends React.Component {
                                   /> <br/><br/>
 
 
-                                <Button variant="contained" size="big" color="primary" style={styles.showKey} onClick={this.submitAnswer}>
+                              <Button variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
                                     Enviar
                                 </Button>
 

@@ -14,7 +14,12 @@ const styles = {
     },
     flex: {
         flex: 1,
-    }
+    },
+    header: {
+        backgroundColor: '#de1616',
+        //color: '#de1616',
+        fontColor: '#ffffff',
+    },
   };
 
 class TopBar extends React.Component{
@@ -46,7 +51,7 @@ class TopBar extends React.Component{
     render(){
         return(
             <div styles={styles.root}>
-                <AppBar position="static">
+                <AppBar position="static" styles={styles.header}>
                     <Toolbar>
 
                         <Typography variant="subheading" color="inherit" align="center" style={styles.flex}>

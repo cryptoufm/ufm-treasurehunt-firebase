@@ -28,11 +28,12 @@ class App extends Component {
       if (authUser) {
         this.setState(() => ({ authUser }));
         history.replace(routes.HOME);
-      } 
+      }
       else {
         this.setState(() => ({ authUser: null}));
+        history.replace(routes.LANDING);
       };
-      
+
     });
   }
 
@@ -50,7 +51,7 @@ class App extends Component {
             exact path={routes.HOME}
             component={() => <HomePage />}
           />
-          
+
         </div>
       </Router>
     );
