@@ -23,9 +23,7 @@ import * as routes from '../constants/routes';
 import firebase, { provider } from '../firebase/firebase';
 import { auth, googleProvider } from '../firebase/firebase.js';
 
-
 const accent = "555"
-
 const styles = {
 
     root: {
@@ -103,22 +101,17 @@ const styles = {
     },
 
 }
-
 var Web3 = require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
 var Tx = require('ethereumjs-tx');
-
 var account;
 var key;
-
 var contractAddress;
 var abi;
 var ownerPub;
 var ownerPriv;
 var contract;
-
 var database = firebase.database();
-
 
 function TabContainer(props) {
     return (
@@ -131,8 +124,6 @@ function TabContainer(props) {
 TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
-
-
 
 let id = 0;
 function createData(name, tokens) {
@@ -152,11 +143,9 @@ const data = [
   createData('User9', 5324),
 ];
 
-
 getGameConfig();
 
 class HomePage extends React.Component {
-
     constructor(props){
         super(props);
         this.logout = this.logout.bind(this);
@@ -165,7 +154,6 @@ class HomePage extends React.Component {
         this.state = { tokens: 0};
         this.account = account;
     }
-
     logout(){
         console.log("logout");
         console.log(this.props);
@@ -176,11 +164,9 @@ class HomePage extends React.Component {
             console.log(error);
         });
     }
-
     updateTokens(amount) {
       this.setState({tokens : amount})
     }
-
     componentDidMount(){
         var changestate = this.updateTokens;
         this.timerID = setInterval(
@@ -204,69 +190,54 @@ class HomePage extends React.Component {
         });
 
     }
-
     print(){
         console.log(this.state.authUser);
     }
-
-
     state = {
-            value: 0,
-          };
+        value: 0,
+        gameStarted: true,
+        anchorEl: null,
+    };
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
+    componentWillMount() {
 
+        this.setState( { value: 0 })
+        this.setState( { gameStarted: true })
+    }
+    logout() {
+        console.log("logout");
+        console.log(this.props);
+        auth.signOut().then(function() {
+            console.log("logoutsuccessful")
+            history.replace(routes.LANDING);
+        }).catch(function(error) {
+            console.log(error);
+        });
 
-        state = {
-            gameStarted: true,
-        }
-
-        handleChange = (event, value) => {
-          this.setState({ value });
-        };
-
-
-        componentWillMount() {
-
-            this.setState( { value: 0 })
-            this.setState( { gameStarted: true })
-        }
-
-        logout() {
-            console.log("logout");
-            console.log(this.props);
-            auth.signOut().then(function() {
-                console.log("logoutsuccessful")
-                history.replace(routes.LANDING);
-            }).catch(function(error) {
-                console.log(error);
-            });
-
-        }
-
-        goTo(route) {
-            this.props.history.replace(`/${route}`)
-        }
-
-
-        submitAnswer() {
-            console.log(document.getElementById("textBox").value);
-        }
-
-        state = {
+    }
+    goTo(route) {
+        this.props.history.replace(`/${route}`)
+    }
+    submitAnswer() {
+        console.log(document.getElementById("textBox").value);
+        var answerUsuario = document.getElementById("textBox").value;
+        var spot = database.getInfo();
+        var time = database.getInfo(); //missing
+        var dist = database.getInfo(); //missing
+        gradeAnswer(answerUsuario, spot, time, dist);
+    }
+    handleClick = event => {
+        this.setState({
+            anchorEl: event.currentTarget,
+        });
+    };
+    handleClose = () => {
+        this.setState({
             anchorEl: null,
-        };
-
-        handleClick = event => {
-            this.setState({
-              anchorEl: event.currentTarget,
-            });
-        };
-
-        handleClose = () => {
-            this.setState({
-              anchorEl: null,
-            });
-        };
-
+        });
+    };
     render() {
 
         const { value } = this.state;
@@ -528,8 +499,6 @@ class HomePage extends React.Component {
     }
 }
 
-
-
 function getGameConfig(){
     database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
       var data = snapshot.val();
@@ -545,20 +514,17 @@ function getGameConfig(){
 
     });
 }
-
 function printContractBalance(callback){
     contract.methods.balanceOf(account).call( function(error, result){
       var res = result/1000000000000000000;
       callback(res);
     });
 }
-
 function printBalance() {
     var balance = web3.eth.getBalance(account);
     var wei = web3.utils.toWei(balance, 'ether');
     return wei;
 }
-
 function newlyCreated(userToken, nick){
     console.log("jalando funcion");
     var uid = userToken;
@@ -590,7 +556,6 @@ function newlyCreated(userToken, nick){
 
     });
 }
-
 function getGameStations(callback){
     var ref = database.ref('ufm-demo/gameInfo/spots');
     ref.on('value', function(snapshot) {
@@ -599,7 +564,6 @@ function getGameStations(callback){
         callback(data);
     });
 }
-
 function getSpotOrder(data){
     var orden = ordenEstaciones(Object.keys(data).length-1);
     var spotList = [];
@@ -684,20 +648,17 @@ function firstEth(callback){
       });
     });
 }
-
 function setInfo(path, objeto){
     database.ref(path).set(
        objeto
      );
 }
-
 function getInfo(path){
     database.ref(path).once('value').then(function(snapshot){
       var info = (snapshot.val());
       return info;
     });
 }
-
 function setAccountInfo(uid){
   database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
@@ -709,7 +670,6 @@ function setAccountInfo(uid){
     document.getElementById("pKey").innerHTML = info.privKey;
   })
 }
-
 function ordenEstaciones(n){
     var arr = []
     while(arr.length < n){
@@ -719,22 +679,18 @@ function ordenEstaciones(n){
     }
     return arr;
 }
-
 function initAccount(){
     const initAc = contract.methods.initCoins();
     callContractMethod(initAc,"init");
 }
-
 function buyHint1(){
     const buyHint1 = contract.methods.hint1();
     callContractMethod(buyHint1,"hint1");
 }
-
 function buyHint2(){
     const buyHint2 = contract.methods.hint2();
     callContractMethod(buyHint2,"hint2");
 }
-
 function callContractMethod(contractFunction, methType){
 
     const functionAbi = contractFunction.encodeABI();
@@ -776,18 +732,15 @@ function callContractMethod(contractFunction, methType){
       });
     });
 }
-
 function gradeAnswer(answerUsuario, spot, time, distance){
-	var answerCorrecta = getInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
+	var answerCorrecta = database.getInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
 	if(answerUsuario===answerCorrecta){
 		reward(time, distance)
 	}
 }
-
 function reward(time, distance){
     const reward = contract.methods.recompensa(time, distance);
     callContractMethod(reward);
 }
-
 
 export default HomePage;
