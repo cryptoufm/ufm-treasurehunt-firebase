@@ -164,11 +164,9 @@ class HomePage extends React.Component {
     updateTokens(amount) {
       this.setState({tokens : amount})
     }
-
     updateAccount(address,key) {
       this.setState({pub : address, priv: key})
     }
-
     componentDidMount(){
 
         var changeaccount = this.updateAccount;
