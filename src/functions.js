@@ -95,7 +95,7 @@ export function getSpotOrder(data){
       spotList.push(
         {
             completed : 0,
-            name : data[orden[i]]["nombre"],
+            name : orden[i],
             timeFinish: "",
             timeStart : "",
             tokensEarnead: 0,
@@ -108,7 +108,7 @@ export function getSpotOrder(data){
     spotList.push(
       {
           completed : 0,
-          name : data[6]["nombre"],
+          name : 6,
           timeFinish: "",
           timeStart : "",
           tokensEarnead: 0,
