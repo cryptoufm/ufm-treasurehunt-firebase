@@ -1,3 +1,16 @@
+export var Web3 = require('web3');
+export var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/pgj2AMYqLApaPNytv7KF"));
+export var Tx = require('ethereumjs-tx');
+
+export var account;
+export var key;
+
+export var contractAddress;
+export var abi;
+export var ownerPub;
+export var ownerPriv;
+export var contract;
+
 export function getGameConfig(){
     database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
       var data = snapshot.val();
@@ -147,6 +160,15 @@ export function setInfo(path, objeto){
      );
 }
 
+export function setAccountInfo(uid){
+  database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
+    var info = (snapshot.val());
+    console.log(info);
+    account = info.pubKey;
+    key = new Buffer(info.privKey.substring(2), 'hex');
+  })
+}
+
 export  function ordenEstaciones(n){
     var arr = []
     while(arr.length < n){
@@ -220,7 +242,7 @@ export function callContractMethod(contractFunction, methType){
 }
 
 export function gradeAnswer(answerUsuario, spot, time, distance){
-	var answerCorrecta = getGameInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');  
+	var answerCorrecta = getGameInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
 	if(answerUsuario===answerCorrecta){
 		reward(time, distance)
 	}
@@ -229,4 +251,4 @@ export function gradeAnswer(answerUsuario, spot, time, distance){
 export function reward(time, distance){
     const reward = contract.methods.recompensa(time, distance);
     callContractMethod(reward);
-} 
+}
