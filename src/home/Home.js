@@ -150,16 +150,23 @@ class HomePage extends React.Component {
         this.updateTokens = this.updateTokens.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
         this.updateSpot = this.updateSpot.bind(this);
-        this.updateHint = this.updateHint.bind(this);
+
 
         this.startGame = this.startGame.bind(this);
         this.setSpot = this.setSpot.bind(this);
-
-        this.buyHintReact = this.buyHintReact.bind(this);
+        this.callHint1 = this.callHint1.bind(this);
+        this.callHint2 = this.callHint2.bind(this);
         this.stupidFunction = this.stupidFunction.bind(this);
-
+        this.hidehints = this.hidehints.bind(this);
+        this.updateHint1 = this.updateHint1.bind(this);
+        this.updateHint2 = this.updateHint2.bind(this);
         this.submitAnswer = this.submitAnswer.bind(this);
-        this.state = { tokens: "Leyendo al blockchain", isStarted: false};
+        this.state = {
+          tokens: "Leyendo al blockchain",
+          isStarted: false,
+          hint1Shown: false,
+          hint2Shown: false,
+        };
     }
 
 
@@ -253,6 +260,12 @@ class HomePage extends React.Component {
         this.props.history.replace(`/${route}`)
     }
 
+    hidehints(){
+      this.setState({
+        hint1Shown: false,
+        hint2Shown: false
+      })
+    }
     submitAnswer() {
 
         var answerUsuario = document.getElementById("textBox").value;
@@ -263,15 +276,17 @@ class HomePage extends React.Component {
         var uid = this.state.authUser.uid;
         var station = this.state.currentStation;
         var changespot = this.setSpot;
-
+        var hiddenhints = this.hidehints;
         gradeAnswer(answerUsuario, code, time, dist, function(confirm){
           if(confirm){
             if (station == '6'){
-
+              console.log("HAS TERMINADO PERRA");
             }else{
               setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
               setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
               changespot();
+              hiddenhints();
+              document.getElementById("textBox").value = "";
             }
 
           }
@@ -294,8 +309,8 @@ class HomePage extends React.Component {
       this.setState({
         currentStation: station,
         adivinanza: spot.adivinanza,
-        hint1: spot.hint1,
-        hint2: spot.hint2,
+        pista1: spot.hint1,
+        pista2: spot.hint2,
         codigo: spot.codigo,
         latitud: spot.latitud,
         longitud: spot.longitud,
@@ -311,7 +326,7 @@ class HomePage extends React.Component {
       getInfo('ufm-demo/cryptoHunters/'+uid,function(uInfo){
         var station = uInfo.currentStation
         var time2check = uInfo.spots[0].timeStart
-
+        var nextSpot = uInfo.spots[station].name
         var timestamp = new Date().toUTCString();
         console.log(station);
         console.log(time2check);
@@ -323,7 +338,7 @@ class HomePage extends React.Component {
           });
         }
 
-        getInfo('/ufm-demo/gameInfo/spots/'+ station, function(spot){
+        getInfo('/ufm-demo/gameInfo/spots/'+ nextSpot, function(spot){
           console.log(spot.adivinanza)
           changespot(spot, timestamp, station)
         });
@@ -343,42 +358,41 @@ class HomePage extends React.Component {
       console.log(this.state.isStarted);
     }
 
+    updateHint1() {
+      this.setState({
+        hint1Shown: true
+      })
+    }
+
+    updateHint2() {
+      this.setState({
+        hint2Shown: true
+      })
+    }
+
+    callHint1(){
+      var changeHint1 = this.updateHint1;
+      buyHint1(function(value){
+        console.log('mostrar hint 1');
+        changeHint1();
+      });
+    }
+
+    callHint2(){
+        var changeHint2 = this.updateHint2;
+      buyHint2(function(value){
+        console.log('mostrar hint 2');
+        changeHint2();
+      });
+    }
+
     stupidFunction(){
       this.startGame();
       this.setSpot();
     }
 
-    updateHint(hint){
-      if(hint==1){
-        this.setState({
-          displayhint1: this.state.hint1
-        })
-      }else{
-        this.setState({
-          displayhint2: this.state.hint2
-        })
-      }
-    }
-
-    buyHintReact(whichHint){
-      console.log("LLAMANDO FUNCION")
-      var changehint = this.updateHint;
-      if(whichHint == 1){
-        buyHint1(function(valid){
-          if(valid){
-            changehint(1);
-          }
-        });
-      }else{
-        buyHint2(function(valid){
-          if(valid){
-            changehint(2);
-          }
-        });
-      }
 
 
-    }
 
     render() {
 
@@ -484,7 +498,6 @@ class HomePage extends React.Component {
                 {/* HUNT PAGE */}
                 {value === 1 && <TabContainer>
 
-
                     {this.state.isStarted  ? (
 
                         <Card style={styles.card}>
@@ -506,39 +519,54 @@ class HomePage extends React.Component {
                                 </Typography> <br/> <br/>
 
 
-                                <div style={styles.hintButtons}>
+                                {this.state.hint1Shown ? (
+                                  <Typography variant="subheading" align="centered" wrap  >
+
+                                         {this.state.pista1}
+
+                                 </Typography>
+                                ) : (
+                                    <div style={styles.hintButtons}>
+                                  <Button size="medium" color="secondary" align="center" onClick={this.callHint1}>
+                                      Hint no. 1
+                                  </Button>
+                                  </div>
+                                )
+
+                                }
+
+
+
+                                {this.state.hint2Shown ? (
+                                  <Typography variant="subheading" align="centered" wrap  >
+
+                                         {this.state.pista2}
+
+                                 </Typography>
+                                ) : (
+                                    <div style={styles.hintButtons}>
+                                  <Button size="medium" color="secondary" align="center" onClick={this.callHint2}>
+                                      Hint no. 2
+                                  </Button>
+                                  </div>
+                                )
+
+                                }
+
+                                {/*<div style={styles.hintButtons}>
                                     {this.state.displayhint1}
-                                    <Button size="medium" color="secondary" align="center">
+                                    <Button size="medium" color="secondary" align="center" onClick={this.callHint1}>
                                         Hint no. 1
                                     </Button>
 
                                     {this.state.displayhint1}
-                                    <Button size="medium" color="secondary" align="right">
+                                    <Button size="medium" color="secondary" align="right" onClick={this.callHint2}>
                                         Hint no. 2
                                     </Button>
 
-                                </div> <br/>
+                                </div> */} <br/>
 
 
-                                <Popover
-                                    className={styles.popover}
-                                    open={Boolean(anchorEl)}
-                                    anchorEl={anchorEl}
-                                    onClose={this.handleClose}
-                                    anchorOrigin={{
-                                      vertical: 'bottom',
-                                      horizontal: 'center',
-                                    }}
-                                    transformOrigin={{
-                                      vertical: 'bottom',
-                                      horizontal: 'center',
-                                    }}
-                                 >
-
-                                 <Typography style={styles.typography}>
-                                      {this.state.hint1}
-                                     </Typography>
-                                 </Popover>
 
 
                                 <Input
@@ -841,17 +869,22 @@ function ordenEstaciones(n){
 }
 function initAccount(){
     const initAc = contract.methods.initCoins();
-    callContractMethod(initAc,"init");
+    callContractMethod(initAc,"init", function(valid){
+      console.log("cuenta creada");
+    });
 }
 function buyHint1(callback){
     const buyHint1 = contract.methods.hint1();
-    var valid = callContractMethod(buyHint1,"hint1");
-    callback(valid);
+    callContractMethod(buyHint1,"hint1", function(valid){
+      callback(valid);
+    });
+
 }
 function buyHint2(callback){
     const buyHint2 = contract.methods.hint2();
-    var valid = callContractMethod(buyHint2,"hint2");
-    callback(valid);
+    callContractMethod(buyHint2,"hint2", function(valid){
+      callback(valid);
+    });
 }
 function callContractMethod(contractFunction, methType, callback){
 
