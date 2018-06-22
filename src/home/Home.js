@@ -293,6 +293,7 @@ class HomePage extends React.Component {
     }
 
     submitAnswer() {
+
         var changeHint1 = this.updateHint1;
         var changeHint2 = this.updateHint2;
 
@@ -322,6 +323,7 @@ class HomePage extends React.Component {
         //cambien parametro en funcion pls
         //ni verga
         gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
+
           if(confirm){
             if (station == '6'){
               console.log("HAS TERMINADO");
@@ -338,8 +340,11 @@ class HomePage extends React.Component {
               hiddenhints();
               document.getElementById("textBox").value = "";
             }
-
+            document.getElementById("consulta").innerHTML = "";
+          }else{
+            document.getElementById("consulta").innerHTML = "transaccion fallida";
           }
+
         });
     }
 
@@ -397,15 +402,9 @@ class HomePage extends React.Component {
     }
 
     startGame() {
-      console.log("benditions");
-      console.log(this.state.isStarted);
-
-
-
       this.setState({
         isStarted:true,
       });
-      console.log(this.state.isStarted);
     }
 
     updateHint1() {
@@ -421,18 +420,22 @@ class HomePage extends React.Component {
     }
 
     callHint1(){
-      var changeHint1 = this.updateHint1;
-      buyHint1(function(value){
+        document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
+        var changeHint1 = this.updateHint1;
+        buyHint1(function(value){
         console.log('mostrar hint 1');
         changeHint1();
+        document.getElementById("consulta").innerHTML = ""
       });
     }
 
     callHint2(){
+        document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
         var changeHint2 = this.updateHint2;
-      buyHint2(function(value){
+        buyHint2(function(value){
         console.log('mostrar hint 2');
         changeHint2();
+        document.getElementById("consulta").innerHTML = ""
       });
     }
 
@@ -554,31 +557,34 @@ class HomePage extends React.Component {
                         <Card style={styles.card}>
 
                             <CardContent>
-                                <Typography variant="title" align="left" wrap style={styles.longText} >
-                                  {this.state.tokens + " mc" }
+                                <Typography variant="body1" align="right" noWrap style={styles.longText} >
+                                  {this.state.tokens + " MC" }
                                 </Typography>
-                                <Typography variant="headline" align="center" gutterBottom>
+                                <br/>
+                                <Typography variant="title" align="center" gutterBottom>
 
-                                     Estacion numero: {parseInt(this.state.currentStation)+1}
+                                     Estación No. {parseInt(this.state.currentStation)+1}
 
                                  </Typography> <br/>
 
-                                 <Typography variant="subheading" align="centered" wrap  >
+                                 <Typography variant="headline" align="center" wrap>
 
                                         {this.state.adivinanza}
 
                                 </Typography> <br/> <br/>
 
+                                <Typography id="consulta" variant="caption" align="center" noWrap>
+                                </Typography>
 
                                 {this.state.hint1Shown ? (
-                                  <Typography variant="subheading" align="centered" wrap  >
+                                  <Typography variant="body1" align="left" wrap>
 
-                                         {this.state.pista1}
+                                         {"Pista 1: "  + this.state.pista1}
 
                                  </Typography>
                                 ) : (
-                                    <div style={styles.hintButtons}>
-                                  <Button size="medium" color="secondary" align="center" onClick={this.callHint1}>
+                                  <div>
+                                  <Button size="medium" color="secondary" align="left" onClick={this.callHint1}>
                                       Hint no. 1
                                   </Button>
                                   </div>
@@ -589,14 +595,14 @@ class HomePage extends React.Component {
 
 
                                 {this.state.hint2Shown ? (
-                                  <Typography variant="subheading" align="centered" wrap  >
+                                  <Typography variant="body1" align="left" wrap  >
 
-                                         {this.state.pista2}
+                                         {"Pista 2: "  +this.state.pista2}
 
                                  </Typography>
                                 ) : (
-                                    <div style={styles.hintButtons}>
-                                  <Button size="medium" color="secondary" align="center" onClick={this.callHint2}>
+                                  <div>
+                                  <Button size="medium" color="secondary" align="left" onClick={this.callHint2}>
                                       Hint no. 2
                                   </Button>
                                   </div>
@@ -617,8 +623,9 @@ class HomePage extends React.Component {
                                     inputProps={{
                                       'aria-label': 'Description',
                                     }}
-                                  /> <br/><br/>
+                                  />
 
+                                   <br/><br/>
 
                               <Button id="bendiButton" variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
                                     Enviar
@@ -969,6 +976,7 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
   console.log(answerUsuario)
   console.log(answerCorrecta)
   console.log(time)
+  document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
 	if(answerUsuario===answerCorrecta & distance < 0.03){
     console.log("acepto")
 		reward(time, 9, function(confirm){
@@ -978,6 +986,7 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
       }
     });
 	}
+  document.getElementById("consulta").innerHTML = "transacción fallida";
 }
 function reward(time, distance, callback){
     const reward = contract.methods.recompensa(time, distance);
