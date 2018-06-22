@@ -258,9 +258,24 @@ class HomePage extends React.Component {
         var answerUsuario = document.getElementById("textBox").value;
         var code = this.state.codigo;
         var time = Math.ceil(Math.abs(new Date() - new Date(this.state.time))/60000); //missing
-        var dist = 5; //missing
+        var dist = 0.02; //missing
 
-        gradeAnswer(answerUsuario, code, time, dist);
+        var uid = this.state.authUser.uid;
+        var station = this.state.currentStation;
+        var changespot = this.setSpot;
+
+        gradeAnswer(answerUsuario, code, time, dist, function(confirm){
+          if(confirm){
+            if (station == '6'){
+
+            }else{
+              setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
+              changespot();
+            }
+
+          }
+        });
     }
 
     handleClick = event => {
@@ -275,8 +290,9 @@ class HomePage extends React.Component {
         });
     };
 
-    updateSpot(spot, timestamp){
+    updateSpot(spot, timestamp, station){
       this.setState({
+        currentStation: station,
         adivinanza: spot.adivinanza,
         hint1: spot.hint1,
         hint2: spot.hint2,
@@ -297,7 +313,7 @@ class HomePage extends React.Component {
         var time2check = uInfo.spots[0].timeStart
 
         var timestamp = new Date().toUTCString();
-        console.log(timestamp);
+        console.log(station);
         console.log(time2check);
         if( time2check == ""){
           setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
@@ -309,7 +325,7 @@ class HomePage extends React.Component {
 
         getInfo('/ufm-demo/gameInfo/spots/'+ station, function(spot){
           console.log(spot.adivinanza)
-          changespot(spot, timestamp)
+          changespot(spot, timestamp, station)
         });
       });
 
@@ -837,14 +853,14 @@ function buyHint2(callback){
     var valid = callContractMethod(buyHint2,"hint2");
     callback(valid);
 }
-function callContractMethod(contractFunction, methType){
+function callContractMethod(contractFunction, methType, callback){
 
     const functionAbi = contractFunction.encodeABI();
     let estimatedGas;
     let nonce;
 
     console.log("Getting gas estimate");
-
+    let conf = false;
     web3.eth.getGasPrice().then((gasAmount) => {
       estimatedGas = gasAmount.toString(16);
       console.log(gasAmount);
@@ -871,24 +887,33 @@ function callContractMethod(contractFunction, methType){
         web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
         .on('receipt', function(receipt){
           console.log(receipt);
-
+          callback(true);
         });
-
       });
     });
+
 }
-function gradeAnswer(answerUsuario, answerCorrecta, time, distance){
+function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
   console.log(answerUsuario)
   console.log(answerCorrecta)
   console.log(time)
-	if(answerUsuario===answerCorrecta & distance < 30){
+	if(answerUsuario===answerCorrecta & distance < 0.03){
     console.log("acepto")
-		reward(time, 9);
+		reward(time, 9, function(confirm){
+      console.log(confirm);
+      if(confirm){
+        callback(confirm);
+      }
+    });
 	}
 }
-function reward(time, distance){
+function reward(time, distance, callback){
     const reward = contract.methods.recompensa(time, distance);
-    callContractMethod(reward);
+    callContractMethod(reward, "reward" ,function(confirm){
+      if(confirm){
+        callback(confirm);
+      }
+    });
 }
 
 export default geolocated({
