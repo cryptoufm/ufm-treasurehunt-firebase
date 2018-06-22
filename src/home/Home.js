@@ -457,6 +457,7 @@ class HomePage extends React.Component {
 
                            </Typography>  <br/>
 
+                           {/*
                            {!this.props.isGeolocationAvailable ? <div>Your browser does not support Geolocation</div> :
                            !this.props.isGeolocationEnabled ? <div>Geolocation is not enabled</div> : this.props.coords
                            ?
@@ -470,7 +471,7 @@ class HomePage extends React.Component {
                            <p>Test distancia Escuela Negocios: {this.props.coords
 ? this.distance(this.props.coords.latitude,this.props.coords.longitude,14.604608,-90.505463, "K") + " km"
 : "none"}</p>
-
+*/}
                            <Typography variant="subheading" align="center" gutterBottom>
 
                                Ethereum address:
