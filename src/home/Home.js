@@ -163,7 +163,7 @@ class HomePage extends React.Component {
         this.updateHint2 = this.updateHint2.bind(this);
         this.submitAnswer = this.submitAnswer.bind(this);
         this.state = {
-          tokens: "Leyendo al blockchain",
+          tokens: "...consultado al blockchain tus ",
           isStarted: false,
           hint1Shown: false,
           hint2Shown: false,
@@ -205,7 +205,7 @@ class HomePage extends React.Component {
               console.log(error);
           }
           else {
-              console.log("update success!");
+              // console.log("update success!");
           }
         });
     }
@@ -299,7 +299,6 @@ class HomePage extends React.Component {
         var answerUsuario = document.getElementById("textBox").value;
         var code = this.state.codigo;
         var time = Math.ceil(Math.abs(new Date() - new Date(this.state.time))/60000); //missing
-        var dist = 0.02; //missing
 
         var uid = this.state.authUser.uid;
         var station = this.state.currentStation;
@@ -320,14 +319,9 @@ class HomePage extends React.Component {
             trunc_dist = 15;
         }
         console.log(trunc_dist);
-
-
         //cambien parametro en funcion pls
-
-
-
-
-        gradeAnswer(answerUsuario, code, time, dist, function(confirm){
+        //ni verga
+        gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
           if(confirm){
             if (station == '6'){
               console.log("HAS TERMINADO");
@@ -469,7 +463,7 @@ class HomePage extends React.Component {
                   centered>
                   <Tab style={styles.tabLabel} label="Profile" />
                   <Tab style={styles.tabLabel} label="Hunt" />
-                  <Tab style={styles.tabLabel} label="Ranking"/>
+                  <Tab style={styles.tabLabel} label="Players"/>
                 </Tabs>
 
 
@@ -507,7 +501,7 @@ class HomePage extends React.Component {
                            <Typography variant="subheading" align="center" gutterBottom>
 
                                Dirección pública de Ethereum:
-                               <p id="puKey"></p>
+
 
 
                            </Typography>
@@ -526,7 +520,7 @@ class HomePage extends React.Component {
 
                            <Typography variant="body1" align="center" gutterBottom>
 
-                               {this.state.tokens + " mc" }
+                               {this.state.tokens + " MC"}
 
                            </Typography> <br/>
 
@@ -639,8 +633,8 @@ class HomePage extends React.Component {
                             <Card style={styles.card}>
 
                                 <CardContent>
-
-                                    <Button variant="contained" size="big" color="primary" style={styles.showKey} onClick={this.stupidFunction}>
+                                    <br/><br/><br/><br/><br/><br/><br/><br/>
+                                    <Button variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.stupidFunction}>
                                       Comenzar
                                     </Button>
 
@@ -669,24 +663,6 @@ class HomePage extends React.Component {
 
                            </Typography> <br/>
 
-
-                           <Typography variant="subheading" align="left">
-
-                              Marrocoins:
-
-                          </Typography>
-
-                          <Typography variant="body1" align="center">
-
-                              3492398 tokens
-
-                           </Typography> <br/>
-
-                           <Typography variant="subheading" align="left">
-
-                              Hunters:
-
-                           </Typography>
 
                            <Table>
 
