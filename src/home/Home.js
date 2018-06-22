@@ -281,7 +281,10 @@ class HomePage extends React.Component {
         hint2Shown: false
       })
     }
+
     submitAnswer() {
+        var changeHint1 = this.updateHint1;
+        var changeHint2 = this.updateHint2;
 
         var answerUsuario = document.getElementById("textBox").value;
         var code = this.state.codigo;
@@ -295,7 +298,13 @@ class HomePage extends React.Component {
         gradeAnswer(answerUsuario, code, time, dist, function(confirm){
           if(confirm){
             if (station == '6'){
-              console.log("HAS TERMINADO PERRA");
+              console.log("HAS TERMINADO");
+              setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              changespot();
+              changeHint1();
+              changeHint2();
+              document.getElementById("textBox").style.display = "none";
+              document.getElementById("bendiButton").style.display = "none";
             }else{
               setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
               setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
@@ -523,7 +532,7 @@ class HomePage extends React.Component {
                                 </Typography>
                                 <Typography variant="headline" align="center" gutterBottom>
 
-                                     Encuentra el lugar...
+                                     Estacion numero: {parseInt(this.state.currentStation)+1}
 
                                  </Typography> <br/>
 
@@ -595,7 +604,7 @@ class HomePage extends React.Component {
                                   /> <br/><br/>
 
 
-                              <Button variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
+                              <Button id="bendiButton" variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
                                     Enviar
                                 </Button>
 
@@ -673,8 +682,8 @@ class HomePage extends React.Component {
                                         !this.state.cryptoHunters
                                             ? console.log("not set CH")
                                             : Object.values(this.state.cryptoHunters).map((user) => {
-                                                console.log(user)
-                                                return ( 
+
+                                                return (
                                                     <TableRow key = {user.privKey}>
                                                         <TableCell component = "th" scope = "row">
                                                             {user.nickname}
@@ -796,6 +805,17 @@ function getSpotOrder(data){
       {
           completed : 0,
           name : 6,
+          timeFinish: "",
+          timeStart : "",
+          tokensEarnead: 0,
+          useHint1 : 0,
+          useHint2 : 0
+      }
+    );
+    spotList.push(
+      {
+          completed : 0,
+          name : 7,
           timeFinish: "",
           timeStart : "",
           tokensEarnead: 0,
