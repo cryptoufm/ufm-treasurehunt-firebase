@@ -78,9 +78,9 @@ const styles = {
         marginLeft: "calc(50% - 100px)",
     },
     input: {
-        width: "180",
+        width: "70%",
         padding: "5px",
-        marginLeft: "calc(50% - 90px)",
+        marginLeft: "15%",
     },
     tabscolor: {
         marginTop: "-2px",
@@ -198,16 +198,20 @@ class HomePage extends React.Component {
     }
     updateTokens(amount) {
         this.setState({tokens : amount})
-        var updates = {}
-        updates['ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
-        database.ref().update(updates,function(error){
-          if (error){
-              console.log(error);
-          }
-          else {
-              // console.log("update success!");
-          }
-        });
+
+        if(this.state.authUser !== undefined){
+          var updates = {}
+          updates['ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
+          database.ref().update(updates,function(error){
+            if (error){
+                console.log(error);
+            }
+            else {
+                // console.log("update success!");
+            }
+          });
+        }
+
     }
     updateAccount(address,key) {
       this.setState({pub : address, priv: key})
@@ -575,6 +579,7 @@ class HomePage extends React.Component {
 
                                 <Typography id="consulta" variant="caption" align="center" noWrap>
                                 </Typography>
+                                <br/>
 
                                 {this.state.hint1Shown ? (
                                   <Typography variant="body1" align="left" wrap>
@@ -615,17 +620,14 @@ class HomePage extends React.Component {
 
 
 
-                                <Input
-                                    id="textBox"
-                                    centered
-                                    placeholder="Código"
-                                    style={styles.input}
-                                    inputProps={{
-                                      'aria-label': 'Description',
-                                    }}
-                                  />
+                              <Input
+                                  id="textBox"
+                                  placeholder="Código"
+                                  style={styles.input}
+                                />
 
-                                   <br/><br/>
+
+                               <br/><br/>
 
                               <Button id="bendiButton" variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
                                     Enviar
@@ -787,12 +789,12 @@ function getGameStations(callback){
     });
 }
 function getSpotOrder(data){
-    var orden = ordenEstaciones(Object.keys(data).length-1);
+    var orden = ordenEstaciones(Object.keys(data).length-2);
     var spotList = [];
 
     var i;
 
-    for (i =0; i<Object.keys(data).length-1; i++){
+    for (i =0; i<Object.keys(data).length-2; i++){
       spotList.push(
         {
             completed : 0,
