@@ -326,6 +326,7 @@ class HomePage extends React.Component {
         console.log(trunc_dist);
         //cambien parametro en funcion pls
         //ni verga
+
         gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
 
           if(confirm){
@@ -350,6 +351,7 @@ class HomePage extends React.Component {
           }
 
         });
+
     }
 
     handleClick = event => {
@@ -978,8 +980,9 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
   console.log(answerUsuario)
   console.log(answerCorrecta)
   console.log(time)
+  console.log(distance)
   document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
-	if(answerUsuario===answerCorrecta & distance < 0.03){
+	if(answerUsuario===answerCorrecta & distance < 9){
     console.log("acepto")
 		reward(time, 9, function(confirm){
       console.log(confirm);
