@@ -151,7 +151,6 @@ class HomePage extends React.Component {
         this.updateAccount = this.updateAccount.bind(this);
         this.updateSpot = this.updateSpot.bind(this);
         this.updateHint = this.updateHint.bind(this);
-        this.submitAnswer = this.submitAnswer.bind(this);
 
         this.startGame = this.startGame.bind(this);
         this.setSpot = this.setSpot.bind(this);
@@ -159,7 +158,7 @@ class HomePage extends React.Component {
         this.buyHintReact = this.buyHintReact.bind(this);
         this.stupidFunction = this.stupidFunction.bind(this);
 
-
+        this.submitAnswer = this.submitAnswer.bind(this);
         this.state = { tokens: "Leyendo al blockchain", isStarted: false};
     }
 
@@ -255,16 +254,13 @@ class HomePage extends React.Component {
     }
 
     submitAnswer() {
-        console.log(document.getElementById("textBox").value);
-        
+
         var answerUsuario = document.getElementById("textBox").value;
-        var dist = this.distance(this.props.coords.latitude, this.props.coords.longitude, 14.604608, -90.505463, "K");
-        console.log(dist);
+        var code = this.state.codigo;
+        var time = Math.ceil(Math.abs(new Date() - new Date(this.state.time))/60000); //missing
+        var dist = 5; //missing
 
-
-
-        //gradeAnswer(answerUsuario, spot, time, dist);
-        
+        gradeAnswer(answerUsuario, code, time, dist);
     }
 
     handleClick = event => {
@@ -279,7 +275,7 @@ class HomePage extends React.Component {
         });
     };
 
-    updateSpot(spot){
+    updateSpot(spot, timestamp){
       this.setState({
         adivinanza: spot.adivinanza,
         hint1: spot.hint1,
@@ -287,17 +283,33 @@ class HomePage extends React.Component {
         codigo: spot.codigo,
         latitud: spot.latitud,
         longitud: spot.longitud,
-        nombre: spot.nombre
+        nombre: spot.nombre,
+        time: timestamp
       })
     }
 
     setSpot(){
+
       var changespot = this.updateSpot;
-      getInfo('ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/currentStation',function(station){
+      var uid = this.state.authUser.uid;
+      getInfo('ufm-demo/cryptoHunters/'+uid,function(uInfo){
+        var station = uInfo.currentStation
+        var time2check = uInfo.spots[0].timeStart
+
+        var timestamp = new Date().toUTCString();
+        console.log(timestamp);
+        console.log(time2check);
+        if( time2check == ""){
+          setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
+        }else{
+          getInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+station+'/timeStart',function(time){
+            timestamp = time
+          });
+        }
 
         getInfo('/ufm-demo/gameInfo/spots/'+ station, function(spot){
           console.log(spot.adivinanza)
-          changespot(spot)
+          changespot(spot, timestamp)
         });
       });
 
@@ -306,6 +318,9 @@ class HomePage extends React.Component {
     startGame() {
       console.log("benditions");
       console.log(this.state.isStarted);
+
+
+
       this.setState({
         isStarted:true,
       });
@@ -459,14 +474,16 @@ class HomePage extends React.Component {
                         <Card style={styles.card}>
 
                             <CardContent>
-
+                                <Typography variant="title" align="left" wrap style={styles.longText} >
+                                  {this.state.tokens + " mc" }
+                                </Typography>
                                 <Typography variant="headline" align="center" gutterBottom>
 
                                      Encuentra el lugar...
 
                                  </Typography> <br/>
 
-                                 <Typography variant="body1" align="justify" wrap style={styles.longText} >
+                                 <Typography variant="subheading" align="centered" wrap  >
 
                                         {this.state.adivinanza}
 
@@ -853,17 +870,20 @@ function callContractMethod(contractFunction, methType){
 
         web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
         .on('receipt', function(receipt){
-          return true;
           console.log(receipt);
+
         });
-        return false;
+
       });
     });
 }
-function gradeAnswer(answerUsuario, spot, time, distance){
-	var answerCorrecta = database.getInfo('ufm-treasurehunt/'+'ufm-demo/'+'gameInfo/'+'spots/'+spot+'/codigo');
-	if(answerUsuario===answerCorrecta){
-		reward(time, distance)
+function gradeAnswer(answerUsuario, answerCorrecta, time, distance){
+  console.log(answerUsuario)
+  console.log(answerCorrecta)
+  console.log(time)
+	if(answerUsuario===answerCorrecta & distance < 30){
+    console.log("acepto")
+		reward(time, 9);
 	}
 }
 function reward(time, distance){
