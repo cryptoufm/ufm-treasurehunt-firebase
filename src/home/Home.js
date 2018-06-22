@@ -823,7 +823,7 @@ function callContractMethod(contractFunction, methType){
 
     console.log("Getting gas estimate");
 
-    contractFunction.estimateGas({from: account}).then((gasAmount) => {
+    web3.eth.getGasPrice().then((gasAmount) => {
       estimatedGas = gasAmount.toString(16);
       console.log(gasAmount);
       console.log("Estimated gas: " + estimatedGas);
@@ -833,7 +833,7 @@ function callContractMethod(contractFunction, methType){
 
         console.log("Nonce: " + nonce);
         const txParams = {
-          gasPrice: web3.utils.toHex(gasAmount),
+          gasPrice: web3.utils.toHex(21000000000),
           gasLimit: web3.utils.toHex(3000000),
           to: contractAddress,
           data: functionAbi,
