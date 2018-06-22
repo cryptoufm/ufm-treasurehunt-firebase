@@ -694,13 +694,8 @@ class HomePage extends React.Component {
                                         !this.state.cryptoHunters
                                             ? console.log("not set CH")
                                             : Object.values(this.state.cryptoHunters).map((user) => {
-<<<<<<< HEAD
                                                 
                                                 return ( 
-=======
-
-                                                return (
->>>>>>> fac709b6107486b4d3b6504bfe30dd6a38e20fa4
                                                     <TableRow key = {user.privKey}>
                                                         <TableCell component = "th" scope = "row">
                                                             {user.nickname}
