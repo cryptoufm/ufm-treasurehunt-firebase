@@ -217,7 +217,7 @@ class HomePage extends React.Component {
 
 
     componentDidMount(){
-
+        document.getElementById("llavePriv").style.display = "none"
         var changeaccount = this.updateAccount;
 
 
@@ -362,7 +362,7 @@ class HomePage extends React.Component {
           });
         }
 
-        getInfo('/ufm-demo/gameInfo/spots/'+ nextSpot, function(spot){
+      getInfo('/ufm-demo/gameInfo/spots/'+ nextSpot, function(spot){
           console.log(spot.adivinanza)
           changespot(spot, timestamp, station)
         });
@@ -497,11 +497,11 @@ class HomePage extends React.Component {
 
                            </Typography> <br/>
 
-                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2}> Mostrar llave privada </Button>
+                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2} onClick={function(){
+                             document.getElementById("llavePriv").style.display = "block"
+                           }}> Mostrar llave privada </Button>
 
-                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2} onClick={initAccount}> prueba </Button>
-
-                           <Typography variant="body1" align="center" noWrap gutterBottom>
+                           <Typography id="llavePriv" variant="body1" align="center" noWrap gutterBottom>
 
                                <br/>
 
@@ -509,7 +509,7 @@ class HomePage extends React.Component {
                            </Typography>
 
                            <br/>
-
+                          <br/>
                            <Button variant="contained" size="medium" color="primary" style={styles.buttons} onClick={this.logout}> Log Out </Button>  <br/> <br/>
 
                      </CardContent>
@@ -577,18 +577,7 @@ class HomePage extends React.Component {
 
                                 }
 
-                                {/*<div style={styles.hintButtons}>
-                                    {this.state.displayhint1}
-                                    <Button size="medium" color="secondary" align="center" onClick={this.callHint1}>
-                                        Hint no. 1
-                                    </Button>
-
-                                    {this.state.displayhint1}
-                                    <Button size="medium" color="secondary" align="right" onClick={this.callHint2}>
-                                        Hint no. 2
-                                    </Button>
-
-                                </div> */} <br/>
+                                <br/>
 
 
 
