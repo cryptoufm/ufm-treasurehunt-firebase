@@ -151,7 +151,8 @@ class HomePage extends React.Component {
         this.updateAccount = this.updateAccount.bind(this);
         this.updateSpot = this.updateSpot.bind(this);
 
-
+        this.getCryptoHunters = this.getCryptoHunters.bind(this);
+        this.updateCryptoHunters = this.updateCryptoHunters.bind(this);
         this.startGame = this.startGame.bind(this);
         this.setSpot = this.setSpot.bind(this);
         this.callHint1 = this.callHint1.bind(this);
@@ -201,6 +202,20 @@ class HomePage extends React.Component {
     updateAccount(address,key) {
       this.setState({pub : address, priv: key})
     }
+
+    getCryptoHunters(){
+        var uch = this.updateCryptoHunters;
+        console.log("test");
+        database.ref('ufm-demo/cryptoHunters/').on('value',function(snapshot) {
+            uch(snapshot.val())
+          });
+    }
+
+    updateCryptoHunters(jsonObject){
+        this.setState({cryptoHunters: jsonObject});
+    }
+
+
     componentDidMount(){
 
         var changeaccount = this.updateAccount;
@@ -221,7 +236,7 @@ class HomePage extends React.Component {
                 this.setState(() => ({ value:0 }));
                 IsUserNew(authUser);
                 //get data from database
-
+                this.getCryptoHunters();
             }
             else {
                 console.log("testHome");
@@ -654,18 +669,24 @@ class HomePage extends React.Component {
                                 </TableHead>
 
                                 <TableBody>
-                                    {data.map(n => {
-                                        return (
-                                            <TableRow key={n.id}>
-                                                <TableCell component="th" scope="row">
-                                                    {n.name}
-                                                </TableCell>
-                                                <TableCell numeric>
-                                                    {n.tokens}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
+                                {
+                                        !this.state.cryptoHunters
+                                            ? console.log("not set CH")
+                                            : Object.values(this.state.cryptoHunters).map((user) => {
+                                                console.log(user)
+                                                return ( 
+                                                    <TableRow key = {user.privKey}>
+                                                        <TableCell component = "th" scope = "row">
+                                                            {user.nickname}
+                                                        </TableCell>
+                                                        <TableCell numeric>
+                                                            {user.tokens}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            }
+                                        )
+                                }
                                 </TableBody>
 
                             </Table>
