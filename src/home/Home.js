@@ -151,6 +151,7 @@ class HomePage extends React.Component {
         this.updateAccount = this.updateAccount.bind(this);
         this.updateSpot = this.updateSpot.bind(this);
         this.updateHint = this.updateHint.bind(this);
+        this.submitAnswer = this.submitAnswer.bind(this);
 
         this.startGame = this.startGame.bind(this);
         this.setSpot = this.setSpot.bind(this);
@@ -260,7 +261,7 @@ class HomePage extends React.Component {
         var dist = this.distance(this.props.coords.latitude, this.props.coords.longitude, 14.604608, -90.505463, "K");
         console.log(dist);
 
-        
+
 
         //gradeAnswer(answerUsuario, spot, time, dist);
         
