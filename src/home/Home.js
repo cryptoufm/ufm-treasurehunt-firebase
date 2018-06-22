@@ -58,7 +58,7 @@ const styles = {
     popover: {
         margin: "15px",
     },
-    
+
     // DEF CLASSES
     showKey: {
         width: "200px",
@@ -148,8 +148,16 @@ class HomePage extends React.Component {
         this.print = this.print.bind(this);
         this.updateTokens = this.updateTokens.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
-        this.state = { tokens: "Leyendo al blockchain"};
-        this.account = account;
+        this.updateSpot = this.updateSpot.bind(this);
+        this.updateHint = this.updateHint.bind(this);
+
+        this.startGame = this.startGame.bind(this);
+        this.setSpot = this.setSpot.bind(this);
+
+        this.buyHintReact = this.buyHintReact.bind(this);
+        this.stupidFunction = this.stupidFunction.bind(this);
+
+        this.state = { tokens: "Leyendo al blockchain", isStarted: false};
     }
     logout(){
         console.log("logout");
@@ -186,6 +194,7 @@ class HomePage extends React.Component {
                 this.setState(() => ({ authUser }));
                 this.setState(() => ({ value:0 }));
                 IsUserNew(authUser);
+                //get data from database
 
             }
             else {
@@ -196,22 +205,19 @@ class HomePage extends React.Component {
         });
 
     }
+
     print(){
         console.log(this.state.authUser);
     }
-    state = {
-        value: 0,
-        gameStarted: true,
-        anchorEl: null,
-    };
+
     handleChange = (event, value) => {
         this.setState({ value });
     };
     componentWillMount() {
-
         this.setState( { value: 0 })
-        this.setState( { gameStarted: true })
+
     }
+
     logout() {
         console.log("logout");
         console.log(this.props);
@@ -223,9 +229,11 @@ class HomePage extends React.Component {
         });
 
     }
+
     goTo(route) {
         this.props.history.replace(`/${route}`)
     }
+
     submitAnswer() {
         console.log(document.getElementById("textBox").value);
         var answerUsuario = document.getElementById("textBox").value;
@@ -234,22 +242,94 @@ class HomePage extends React.Component {
         var dist = database.getInfo(); //missing
         gradeAnswer(answerUsuario, spot, time, dist);
     }
+
     handleClick = event => {
         this.setState({
             anchorEl: event.currentTarget,
         });
     };
+
     handleClose = () => {
         this.setState({
             anchorEl: null,
         });
     };
+
+    updateSpot(spot){
+      this.setState({
+        adivinanza: spot.adivinanza,
+        hint1: spot.hint1,
+        hint2: spot.hint2,
+        codigo: spot.codigo,
+        latitud: spot.latitud,
+        longitud: spot.longitud,
+        nombre: spot.nombre
+      })
+    }
+
+    setSpot(){
+      var changespot = this.updateSpot;
+      getInfo('ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/currentStation',function(station){
+
+        getInfo('/ufm-demo/gameInfo/spots/'+ station, function(spot){
+          console.log(spot.adivinanza)
+          changespot(spot)
+        });
+      });
+
+    }
+
+    startGame() {
+      console.log("benditions");
+      console.log(this.state.isStarted);
+      this.setState({
+        isStarted:true,
+      });
+      console.log(this.state.isStarted);
+    }
+
+    stupidFunction(){
+      this.startGame();
+      this.setSpot();
+    }
+
+    updateHint(hint){
+      if(hint==1){
+        this.setState({
+          displayhint1: this.state.hint1
+        })
+      }else{
+        this.setState({
+          displayhint2: this.state.hint2
+        })
+      }
+    }
+
+    buyHintReact(whichHint){
+      console.log("LLAMANDO FUNCION")
+      var changehint = this.updateHint;
+      if(whichHint == 1){
+        buyHint1(function(valid){
+          if(valid){
+            changehint(1);
+          }
+        });
+      }else{
+        buyHint2(function(valid){
+          if(valid){
+            changehint(2);
+          }
+        });
+      }
+
+
+    }
+
     render() {
 
         const { value } = this.state;
         const { profile } = this.state;
         const { anchorEl } = this.state;
-        const { gameStarted } = this.state
 
 
         return (
@@ -312,6 +392,8 @@ class HomePage extends React.Component {
 
                            <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2}> Mostrar llave privada </Button>
 
+                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2} onClick={initAccount}> prueba </Button>
+
                            <Typography variant="body1" align="center" noWrap gutterBottom>
 
                                <br/>
@@ -334,7 +416,7 @@ class HomePage extends React.Component {
                 {value === 1 && <TabContainer>
 
 
-                    {!this.gameStarted  ? (
+                    {this.state.isStarted  ? (
 
                         <Card style={styles.card}>
 
@@ -348,21 +430,19 @@ class HomePage extends React.Component {
 
                                  <Typography variant="body1" align="justify" wrap style={styles.longText} >
 
-                                        El original está en Puebla, México
-                                        Line ssigned a value but never used
-                                        Linassigned a value but never used
-                                        Li is assigned a value but never used
+                                        {this.state.adivinanza}
 
                                 </Typography> <br/> <br/>
 
-                                <div style={styles.hintButtons}>
 
-                                    <Button size="medium" color="secondary" align="center" onClick={this.handleClick}>
+                                <div style={styles.hintButtons}>
+                                    {this.state.displayhint1}
+                                    <Button size="medium" color="secondary" align="center">
                                         Hint no. 1
                                     </Button>
 
-
-                                    <Button size="medium" color="secondary" align="right" onClick={this.handleClick}>
+                                    {this.state.displayhint1}
+                                    <Button size="medium" color="secondary" align="right">
                                         Hint no. 2
                                     </Button>
 
@@ -385,7 +465,8 @@ class HomePage extends React.Component {
                                  >
 
                                  <Typography style={styles.typography}>
-                                     Esta es la pista... </Typography>
+                                      {this.state.hint1}
+                                     </Typography>
                                  </Popover>
 
 
@@ -414,7 +495,7 @@ class HomePage extends React.Component {
 
                                 <CardContent>
 
-                                    <Button variant="contained" size="big" color="primary" style={styles.showKey} onClick={this.start}>
+                                    <Button variant="contained" size="big" color="primary" style={styles.showKey} onClick={this.stupidFunction}>
                                       Comenzar
                                     </Button>
 
@@ -551,7 +632,8 @@ function newlyCreated(userToken, nick){
             privKey : acc.privateKey,
             pubKey : account,
             spots : spotList,
-            tokens : 0
+            tokens : 0,
+            currentStation: 0
           }
       console.log(json);
       firstEth(function(){
@@ -636,7 +718,7 @@ function firstEth(callback){
           gasPrice: web3.utils.toHex(estimatedGas),
           to: account,
           from: ownerPub,
-          value: web3.utils.toHex(web3.utils.toWei('0.001', 'ether')),
+          value: web3.utils.toHex(web3.utils.toWei('0.1', 'ether')),
           nonce: '0x' + nonce,
           chainId: web3.utils.toHex(3)
         };
@@ -659,12 +741,13 @@ function setInfo(path, objeto){
        objeto
      );
 }
-function getInfo(path){
-    database.ref(path).once('value').then(function(snapshot){
+function getInfo(path, callback){
+    var info = database.ref(path).once('value').then(function(snapshot){
       var info = (snapshot.val());
-      return info;
+      callback(info);
     });
 }
+
 function setAccountInfo(uid){
   database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
@@ -689,13 +772,15 @@ function initAccount(){
     const initAc = contract.methods.initCoins();
     callContractMethod(initAc,"init");
 }
-function buyHint1(){
+function buyHint1(callback){
     const buyHint1 = contract.methods.hint1();
-    callContractMethod(buyHint1,"hint1");
+    var valid = callContractMethod(buyHint1,"hint1");
+    callback(valid);
 }
-function buyHint2(){
+function buyHint2(callback){
     const buyHint2 = contract.methods.hint2();
-    callContractMethod(buyHint2,"hint2");
+    var valid = callContractMethod(buyHint2,"hint2");
+    callback(valid);
 }
 function callContractMethod(contractFunction, methType){
 
@@ -730,11 +815,10 @@ function callContractMethod(contractFunction, methType){
 
         web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
         .on('receipt', function(receipt){
-          if(methType == "hint1" || methType == "hint2"){
-            document.getElementById("displayHint1").innerHTML = "Desplegando hint 1"
-          }
+          return true;
           console.log(receipt);
         });
+        return false;
       });
     });
 }
