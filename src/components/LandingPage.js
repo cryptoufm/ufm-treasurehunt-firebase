@@ -98,39 +98,39 @@ function getStepContent(step) {
       return `Los alumnos de Computer Science, del curso, "Technologies & Freedom",
       te damos la bienvenida a nuestro juego basado en blockchain!
       Esperamos que lo disfrutes, pero sobretodo, que experimentes un poco
-      de todo lo que se puede realizar con ésta nueva tecnología!`;
+      de todo lo que se puede realizar con esta nueva tecnología!`;
     // 1 : Registro
     case 1:
       return `Para ingresar a la red de "CryptoHunt", debes de crear una cuenta,
       la cual automáticamente, te creará tu "wallet", y con la cual estarás almacenando
-      los "MarroCoins" que recolectes durante el juego.
-      Puedes crear tu cuenta con la plataforma de tu preferencia entre facebook & google.`;
+      los "MarroCoins" que recolectes durante el juego. Recuerda no refrescar la página antes que
+      aparezcan tus "MarroCoins"`;
 
     // 2 : Credenciales
     case 2:
       return `Al momento de crear tu cuenta, se te asignará una llave privada única,
       la cual se verá como una cadena de caracteres entre números y letras.
-      Te recomendamos almacenar ésta credencial junto con tu contraseña en un lugar seguro`;
+      Te recomendamos almacenar esta credencial junto con tu contraseña en un lugar seguro`;
 
     // 3 : CryptoHunt
     case 3:
       return `CryptoHunt, es un juego basado en la metodología de "búsqueda del tesoro",
-      pero en éste caso, cada vez que cumplas con el reto asignado, dependiendo de tu
-      efectividad para resolverlo, se te acreditarán cierta cantidad de MarroCoins en tu wallet.
-      Mientras más rápido te muevas, más MarroCoins ganas, y recuerda que el juego dura 60 minutos.`;
+      pero en este caso, cada vez que cumplas con el reto asignado, dependiendo de tu
+      efectividad para resolverlo, se te acreditará cierta cantidad de MarroCoins en tu wallet.
+      Mientras más rápido te muevas, más MarroCoins ganas.`;
 
     // 4 : Adivinanzas
     case 4:
-      return `Para cumplir cada reto, se te presentará una adivinanza o acertijo,
-      el cual debes de resolver para descifrar el CryptoSpot exacto al que te debes de
+      return `Para cumplir cada reto, se te presentará una adivinanza o acertijo, que te
+      indicará el CryptoSpot exacto al que te debes de
       dirigir para que se te presente el siguiente reto. El juego se desarrolla en 7
       CryptoSpots dentro del campus de la UFM.`;
 
     // 5 : Hints
     case 5:
-      return `En caso de que no logres descifrar el acertijo, dispones de hasta 2 "hints".
+      return `En caso de que no logres descifrar el acertijo, dispones de 2 "hints" para comprar.
       Ambos son pagados pero con diferente precio. Por el primero, se te descontarán 15 MarroCoins (MC),
-      mientras que por el segundo, 25 MarroCoins`;
+      mientras que por el segundo, 25 MarroCoins. No refresques la página.`;
 
     // 6 : Estaciones
     case 6:
@@ -147,7 +147,7 @@ function getStepContent(step) {
     // 8 : LoginPage (Facebook || Google)
     case 8:
       return `A continuación, puedes ingresar al juego CryptoHunt iniciando sesión
-      con la plataforma de tu preferencia, Facebook o Google.`;
+      con la plataforma de Google.`;
 
     default:
       return 'Unknown step';

@@ -232,6 +232,8 @@ class HomePage extends React.Component {
 
     componentDidMount(){
         document.getElementById("llavePriv").style.display = "none"
+
+
         var changeaccount = this.updateAccount;
 
 
@@ -446,8 +448,10 @@ class HomePage extends React.Component {
     }
 
     stupidFunction(){
+
       this.startGame();
       this.setSpot();
+
     }
 
 
@@ -583,10 +587,25 @@ class HomePage extends React.Component {
                                 </Typography>
                                 <br/>
 
-                                {this.state.hint1Shown ? (
-                                  <Typography variant="body1" align="left" wrap>
+                                {this.state.currentStation=="7" ? (
+                                  <Typography variant="body1" align="center" wrap >
+                                  <a href="https://es.surveymonkey.com/r/H3CJ8TW" >
+                                       Haz click aquí
+                                  </a>
+                                  </Typography>
+                                ) : (
+                                  <br/>
+                                ) }
 
-                                         {"Pista 1: "  + this.state.pista1}
+
+
+
+                                {this.state.hint1Shown ? (
+
+
+                                  <Typography variant="body1" align="left" wrap >
+
+                                         {this.state.pista1}
 
                                  </Typography>
                                 ) : (
@@ -604,7 +623,7 @@ class HomePage extends React.Component {
                                 {this.state.hint2Shown ? (
                                   <Typography variant="body1" align="left" wrap  >
 
-                                         {"Pista 2: "  +this.state.pista2}
+                                         {this.state.pista2}
 
                                  </Typography>
                                 ) : (
@@ -991,7 +1010,7 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
       }
     });
 	}
-  document.getElementById("consulta").innerHTML = "transacción fallida";
+  
 }
 function reward(time, distance, callback){
     const reward = contract.methods.recompensa(time, distance);
