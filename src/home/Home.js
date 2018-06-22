@@ -259,9 +259,8 @@ class HomePage extends React.Component {
         var answerUsuario = document.getElementById("textBox").value;
         var dist = this.distance(this.props.coords.latitude, this.props.coords.longitude, 14.604608, -90.505463, "K");
         console.log(dist);
-        
+
         //gradeAnswer(answerUsuario, spot, time, dist);
-        
         
     }
 
