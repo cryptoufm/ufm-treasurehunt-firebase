@@ -197,7 +197,17 @@ class HomePage extends React.Component {
         });
     }
     updateTokens(amount) {
-      this.setState({tokens : amount})
+        this.setState({tokens : amount})
+        var updates = {}
+        updates['ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
+        database.ref().update(updates,function(error){
+          if (error){
+              console.log(error);
+          }
+          else {
+              console.log("update success!");
+          }
+        });
     }
     updateAccount(address,key) {
       this.setState({pub : address, priv: key})
@@ -295,6 +305,28 @@ class HomePage extends React.Component {
         var station = this.state.currentStation;
         var changespot = this.setSpot;
         var hiddenhints = this.hidehints;
+
+        //pasar KM a metros
+        var dist_diff = this.distance(this.props.coords.latitude, this.props.coords.longitude, this.state.latitud, this.state.longitud)*1000;
+        console.log(dist_diff);
+        var trunc_dist;
+        //si esta a 45m del punto
+        if (dist_diff <= 45){
+            //truncar la dist a 7 marufiasabrosa
+            trunc_dist = 7;
+        }
+        else {
+            //a 15 paque no sea vergas
+            trunc_dist = 15;
+        }
+        console.log(trunc_dist);
+
+
+        //cambien parametro en funcion pls
+
+
+
+
         gradeAnswer(answerUsuario, code, time, dist, function(confirm){
           if(confirm){
             if (station == '6'){
@@ -474,7 +506,7 @@ class HomePage extends React.Component {
 */}
                            <Typography variant="subheading" align="center" gutterBottom>
 
-                               Ethereum address:
+                               Dirección pública de Ethereum:
                                <p id="puKey"></p>
 
 
