@@ -255,11 +255,14 @@ class HomePage extends React.Component {
 
     submitAnswer() {
         console.log(document.getElementById("textBox").value);
+        
         var answerUsuario = document.getElementById("textBox").value;
-        var spot = database.getInfo();
-        var time = database.getInfo(); //missing
-        var dist = database.getInfo(); //missing
-        gradeAnswer(answerUsuario, spot, time, dist);
+        var dist = this.distance(this.props.coords.latitude, this.props.coords.longitude, 14.604608, -90.505463, "K");
+        console.log(dist);
+        
+        //gradeAnswer(answerUsuario, spot, time, dist);
+        
+        
     }
 
     handleClick = event => {
