@@ -23,6 +23,14 @@ import * as routes from '../constants/routes';
 import firebase, { provider } from '../firebase/firebase';
 import { auth, googleProvider } from '../firebase/firebase.js';
 import { geolocated } from 'react-geolocated';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import purple from '@material-ui/core/colors/purple';
 
 const accent = "555"
 const styles = {
@@ -167,8 +175,16 @@ class HomePage extends React.Component {
           isStarted: false,
           hint1Shown: false,
           hint2Shown: false,
+          open: false
         };
     }
+    handleClickOpen = () => {
+        this.setState({ open: true });
+      };
+
+    handleClose2 = () => {
+        this.setState({ open: false });
+    };
 
 
     distance(lat1, lon1, lat2, lon2, unit) {
@@ -201,7 +217,7 @@ class HomePage extends React.Component {
 
         if(this.state.authUser !== undefined){
           var updates = {}
-          updates['ufm-demo/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
+          updates['workaholic/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
           database.ref().update(updates,function(error){
             if (error){
                 console.log(error);
@@ -220,7 +236,7 @@ class HomePage extends React.Component {
     getCryptoHunters(){
         var uch = this.updateCryptoHunters;
         console.log("test");
-        database.ref('ufm-demo/cryptoHunters/').on('value',function(snapshot) {
+        database.ref('workaholic/cryptoHunters/').on('value',function(snapshot) {
             uch(snapshot.val())
           });
     }
@@ -232,8 +248,8 @@ class HomePage extends React.Component {
 
     componentDidMount(){
         document.getElementById("llavePriv").style.display = "none"
-
-
+        var open = this.handleClickOpen;
+        var close2 = this.handleClose;
         var changeaccount = this.updateAccount;
 
 
@@ -248,9 +264,12 @@ class HomePage extends React.Component {
         console.log(this.state);
         auth.onAuthStateChanged(authUser => {
             if (authUser) {
+
                 this.setState(() => ({ authUser }));
                 this.setState(() => ({ value:0 }));
+
                 IsUserNew(authUser);
+
                 //get data from database
                 this.getCryptoHunters();
             }
@@ -299,9 +318,10 @@ class HomePage extends React.Component {
     }
 
     submitAnswer() {
-
+        this.handleClickOpen();
         var changeHint1 = this.updateHint1;
         var changeHint2 = this.updateHint2;
+        var close2 = this.handleClose2;
 
         var answerUsuario = document.getElementById("textBox").value;
         var code = this.state.codigo;
@@ -323,33 +343,37 @@ class HomePage extends React.Component {
         }
         else {
             //a 15 paque no sea vergas
-            trunc_dist = 15;
+            trunc_dist = 7;
         }
         console.log(trunc_dist);
         //cambien parametro en funcion pls
-        //ni verga
 
+
+        console.log('aaaaaaaa');
         gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
 
           if(confirm){
             if (station == '6'){
               console.log("HAS TERMINADO");
-              setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              setInfo('workaholic/cryptoHunters/'+uid+'/currentStation/', station + 1);
               changespot();
               changeHint1();
               changeHint2();
               document.getElementById("textBox").style.display = "none";
               document.getElementById("bendiButton").style.display = "none";
             }else{
-              setInfo('ufm-demo/cryptoHunters/'+uid+'/currentStation/', station + 1);
-              setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
+              setInfo('workaholic/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              setInfo('workaholic/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
               changespot();
               hiddenhints();
+              close2();
               document.getElementById("textBox").value = "";
             }
+            close2();
             document.getElementById("consulta").innerHTML = "";
           }else{
-            document.getElementById("consulta").innerHTML = "transaccion fallida";
+            document.getElementById("consulta").innerHTML = "transaccion fallida, codigo erroneo";
+            close2();
           }
 
         });
@@ -386,7 +410,7 @@ class HomePage extends React.Component {
 
       var changespot = this.updateSpot;
       var uid = this.state.authUser.uid;
-      getInfo('ufm-demo/cryptoHunters/'+uid,function(uInfo){
+      getInfo('workaholic/cryptoHunters/'+uid,function(uInfo){
         var station = uInfo.currentStation
         var time2check = uInfo.spots[0].timeStart
         var nextSpot = uInfo.spots[station].name
@@ -394,14 +418,14 @@ class HomePage extends React.Component {
         console.log(station);
         console.log(time2check);
         if( time2check == ""){
-          setInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
+          setInfo('workaholic/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
         }else{
-          getInfo('ufm-demo/cryptoHunters/'+uid+'/spots/'+station+'/timeStart',function(time){
+          getInfo('workaholic/cryptoHunters/'+uid+'/spots/'+station+'/timeStart',function(time){
             timestamp = time
           });
         }
 
-      getInfo('/ufm-demo/gameInfo/spots/'+ nextSpot, function(spot){
+      getInfo('/workaholic/gameInfo/spots/'+ nextSpot, function(spot){
           console.log(spot.adivinanza)
           changespot(spot, timestamp, station)
         });
@@ -428,22 +452,28 @@ class HomePage extends React.Component {
     }
 
     callHint1(){
+        this.handleClickOpen();
         document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
         var changeHint1 = this.updateHint1;
+        var close2 = this.handleClose2;
         buyHint1(function(value){
         console.log('mostrar hint 1');
         changeHint1();
         document.getElementById("consulta").innerHTML = ""
+        close2();
       });
     }
 
     callHint2(){
+        this.handleClickOpen();
         document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
         var changeHint2 = this.updateHint2;
+        var close2 = this.handleClose2;
         buyHint2(function(value){
         console.log('mostrar hint 2');
         changeHint2();
         document.getElementById("consulta").innerHTML = ""
+        close2();
       });
     }
 
@@ -462,7 +492,7 @@ class HomePage extends React.Component {
         const { value } = this.state;
         const { profile } = this.state;
         const { anchorEl } = this.state;
-
+        const { fullScreen } = this.props;
 
         return (
 
@@ -505,8 +535,6 @@ class HomePage extends React.Component {
                            <p>{this.props.coords.longitude}</p>
                            </div>
                              : <div>Getting the location data&hellip; </div>}
-
-
                            <p>Test distancia Escuela Negocios: {this.props.coords
 ? this.distance(this.props.coords.latitude,this.props.coords.longitude,14.604608,-90.505463, "K") + " km"
 : "none"}</p>
@@ -609,10 +637,13 @@ class HomePage extends React.Component {
 
                                  </Typography>
                                 ) : (
+
+
                                   <div>
                                   <Button size="medium" color="secondary" align="left" onClick={this.callHint1}>
                                       Hint no. 1
                                   </Button>
+
                                   </div>
                                 )
 
@@ -622,8 +653,8 @@ class HomePage extends React.Component {
 
                                 {this.state.hint2Shown ? (
                                   <Typography variant="body1" align="left" wrap  >
+                                      <img src={this.state.pista2} styles="width:100%;"/>
 
-                                         {this.state.pista2}
 
                                  </Typography>
                                 ) : (
@@ -653,6 +684,25 @@ class HomePage extends React.Component {
                               <Button id="bendiButton" variant="contained" size="big" color="primary" style={styles.buttons} onClick={this.submitAnswer}>
                                     Enviar
                                 </Button>
+                                <Dialog
+                                  fullScreen={fullScreen}
+                                  open={this.state.open}
+                                  onClose={this.handleClose}
+                                  aria-labelledby="responsive-dialog-title"
+                                >
+                                  <DialogTitle id="responsive-dialog-title">{"Sincronizando con el blockchain"}</DialogTitle>
+                                  <DialogContent>
+                                    <DialogContentText>
+                                      Espere un momento...
+                                    </DialogContentText>
+                                    <br/>
+                                    <CircularProgress size={50} />
+
+                                  </DialogContent>
+                                  <DialogActions>
+
+                                  </DialogActions>
+                                </Dialog>
 
                             </CardContent>
 
@@ -744,7 +794,7 @@ class HomePage extends React.Component {
 }
 
 function getGameConfig(){
-    database.ref('/ufm-demo/gameInfo').once('value').then(function(snapshot) {
+    database.ref('/workaholic/gameInfo').once('value').then(function(snapshot) {
       var data = snapshot.val();
       contractAddress = data["contract"];
       abi = JSON.parse(data["contractAbi"]);
@@ -795,14 +845,14 @@ function newlyCreated(userToken, nick){
       console.log(json);
       firstEth(function(){
         initAccount();
-        setInfo("ufm-demo/cryptoHunters/"+uid, json);
+        setInfo("workaholic/cryptoHunters/"+uid, json);
       });
 
 
     });
 }
 function getGameStations(callback){
-    var ref = database.ref('ufm-demo/gameInfo/spots');
+    var ref = database.ref('workaholic/gameInfo/spots');
     ref.on('value', function(snapshot) {
         var data = (snapshot.val());
         console.log(data);
@@ -810,12 +860,12 @@ function getGameStations(callback){
     });
 }
 function getSpotOrder(data){
-    var orden = ordenEstaciones(Object.keys(data).length-2);
+    var orden = ordenEstaciones(Object.keys(data).length-1);
     var spotList = [];
 
     var i;
 
-    for (i =0; i<Object.keys(data).length-2; i++){
+    for (i =0; i<Object.keys(data).length-1; i++){
       spotList.push(
         {
             completed : 0,
@@ -832,18 +882,7 @@ function getSpotOrder(data){
     spotList.push(
       {
           completed : 0,
-          name : 6,
-          timeFinish: "",
-          timeStart : "",
-          tokensEarnead: 0,
-          useHint1 : 0,
-          useHint2 : 0
-      }
-    );
-    spotList.push(
-      {
-          completed : 0,
-          name : 7,
+          name : 4,
           timeFinish: "",
           timeStart : "",
           tokensEarnead: 0,
@@ -854,7 +893,7 @@ function getSpotOrder(data){
     return spotList;
 }
 function IsUserNew(user){
-    database.ref('ufm-demo/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
+    database.ref('workaholic/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
       console.log(snapshot.val());
       if(snapshot.val()==null){
         console.log("creando usuario");
@@ -917,7 +956,7 @@ function getInfo(path, callback){
 }
 
 function setAccountInfo(uid){
-  database.ref('ufm-demo/cryptoHunters/'+uid).once('value').then(function(snapshot) {
+  database.ref('workaholic/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
     //console.log(info);
     account = info.pubKey;
@@ -1010,7 +1049,10 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
       }
     });
 	}
-  
+  else{
+    callback(false);
+  }
+
 }
 function reward(time, distance, callback){
     const reward = contract.methods.recompensa(time, distance);
