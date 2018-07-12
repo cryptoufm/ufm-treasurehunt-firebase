@@ -699,7 +699,7 @@ class HomePage extends React.Component {
 
                                 {this.state.hint2Shown ? (
                                   <Typography variant="body1" align="left" wrap  >
-                                      <img src={this.state.pista2} styles="width:100%;"/>
+                                      <img src={this.state.pista2} styles="width:15%;"/>
 
 
                                  </Typography>
