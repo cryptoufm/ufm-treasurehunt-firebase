@@ -123,8 +123,7 @@ function getStepContent(step) {
     case 4:
       return `Para cumplir cada reto, se te presentará una adivinanza o acertijo, que te
       indicará el CryptoSpot exacto al que te debes de
-      dirigir para que se te presente el siguiente reto. El juego se desarrolla en 7
-      CryptoSpots dentro del campus de la UFM.`;
+      dirigir para que se te presente el siguiente reto.`;
 
     // 5 : Hints
     case 5:
@@ -137,7 +136,7 @@ function getStepContent(step) {
       return `Para identificar el CryptoSpot al que te llevará el acertijo del reto,
       encontrarás un sticker con el logo de CryptoHunt y un código, el cual debes de ingresar
       en la plataforma para que se te asigne el siguiente reto.
-      * En la última estación, se te pedirá que llenes una encuesta para fines académicos.`;
+      `;
 
     // 7 : Premio
     case 7:
