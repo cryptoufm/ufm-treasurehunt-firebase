@@ -699,7 +699,7 @@ class HomePage extends React.Component {
 
                                 {this.state.hint2Shown ? (
                                   <Typography variant="body1" align="left" wrap  >
-                                      <img src={this.state.pista2} styles="width:15%;"/>
+                                      <img src={this.state.pista2} styles="width:100%;"/>
 
 
                                  </Typography>
@@ -987,7 +987,7 @@ function firstEth(callback){
           gasPrice: web3.utils.toHex(estimatedGas),
           to: account,
           from: ownerPub,
-          value: web3.utils.toHex(web3.utils.toWei('0.1', 'ether')),
+          value: web3.utils.toHex(web3.utils.toWei('0.3', 'ether')),
           nonce: '0x' + nonce,
           chainId: web3.utils.toHex(3)
         };
