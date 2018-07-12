@@ -286,6 +286,7 @@ class HomePage extends React.Component {
                 this.setState(() => ({ value:0 }));
 
                 IsUserNew(authUser,function(exists){
+                  changeprofile()
                   if (!exists){
                     console.log("user does not exist!");
                     changeprofile()
