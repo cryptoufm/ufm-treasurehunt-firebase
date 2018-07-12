@@ -87,8 +87,7 @@ function getSteps() {
   'Adivinanzas',
   'Hints',
   'Estaciones',
-  'Premio',
-  'Login Page'];
+  'Premio'];
 }
 
 function getStepContent(step) {
@@ -143,10 +142,7 @@ function getStepContent(step) {
       return `Al final del juego, se premiará al CryptoHunter que tenga la wallet más llena,
       es decir, que haya recolectado la mayor cantidad de MarroCoins`;
 
-    // 8 : LoginPage (Facebook || Google)
-    case 8:
-      return `A continuación, puedes ingresar al juego CryptoHunt iniciando sesión
-      con la plataforma de Google.`;
+    // 8 : LoginPage (Facebook || Googl
 
     default:
       return 'Unknown step';
@@ -232,15 +228,11 @@ class LandingPage extends Component {
                        );
                      })}
                    </Stepper>
-                   {activeStep === steps.length && (
-                     <Paper square elevation={0} className={styles.resetContainer}>
-                       <Button variant="contained" onClick={this.login} style={styles.loginButton}>
-                         Log In
-                       </Button>
-                       <br/><br/>
-                     </Paper>
+                   <Button variant="contained" onClick={this.login} style={styles.loginButton}>
+                     Log In
+                   </Button>
+                   <br/><br/>
 
-                   )}
                  </div>
 
 
