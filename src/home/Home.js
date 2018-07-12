@@ -372,7 +372,7 @@ class HomePage extends React.Component {
         gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
 
           if(confirm){
-            if (station == '6'){
+            if (station == '4'){
               console.log("HAS TERMINADO");
               setInfo('workaholic/cryptoHunters/'+uid+'/currentStation/', station + 1);
               changespot();
@@ -908,12 +908,12 @@ function getGameStations(callback){
     });
 }
 function getSpotOrder(data){
-    var orden = ordenEstaciones(Object.keys(data).length-1);
+    var orden = ordenEstaciones(Object.keys(data).length-2);
     var spotList = [];
 
     var i;
 
-    for (i =0; i<Object.keys(data).length-1; i++){
+    for (i =0; i<Object.keys(data).length-2; i++){
       spotList.push(
         {
             completed : 0,
@@ -931,6 +931,17 @@ function getSpotOrder(data){
       {
           completed : 0,
           name : 3,
+          timeFinish: "",
+          timeStart : "",
+          tokensEarnead: 0,
+          useHint1 : 0,
+          useHint2 : 0
+      }
+    );
+    spotList.push(
+      {
+          completed : 0,
+          name : 4,
           timeFinish: "",
           timeStart : "",
           tokensEarnead: 0,
