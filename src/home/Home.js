@@ -48,6 +48,9 @@ const styles = {
         border: "solid",
         borderColor: "#de1616",
     },
+    loadingCircle: {
+        marginLeft: "calc(50% - 30px)",
+    },
     card: {
         // maxWidth: '600px',
         // marginLeft: "calc(50% - 250px)",
@@ -158,6 +161,7 @@ class HomePage extends React.Component {
         this.updateTokens = this.updateTokens.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
         this.updateSpot = this.updateSpot.bind(this);
+        this.updateProfileShown = this.updateProfileShown.bind(this);
 
         this.getCryptoHunters = this.getCryptoHunters.bind(this);
         this.updateCryptoHunters = this.updateCryptoHunters.bind(this);
@@ -175,6 +179,7 @@ class HomePage extends React.Component {
           isStarted: false,
           hint1Shown: false,
           hint2Shown: false,
+          profileShown: false,
           open: false
         };
     }
@@ -245,13 +250,18 @@ class HomePage extends React.Component {
         this.setState({cryptoHunters: jsonObject});
     }
 
+    updateProfileShown(){
+      this.setState({
+        profileShown: true
+      })
+    }
 
     componentDidMount(){
         document.getElementById("llavePriv").style.display = "none"
         var open = this.handleClickOpen;
         var close2 = this.handleClose;
         var changeaccount = this.updateAccount;
-
+        var changeprofile = this.updateProfileShown;
 
         var changestate = this.updateTokens;
         this.timerID = setInterval(
@@ -268,7 +278,16 @@ class HomePage extends React.Component {
                 this.setState(() => ({ authUser }));
                 this.setState(() => ({ value:0 }));
 
-                IsUserNew(authUser);
+                IsUserNew(authUser,function(exists){
+                  if (!exists){
+                    console.log("user does not exist!");
+                    changeprofile()
+                  }
+                  else{
+                    console.log("user is already created");
+                    changeprofile()
+                  }
+                });
 
                 //get data from database
                 this.getCryptoHunters();
@@ -406,6 +425,12 @@ class HomePage extends React.Component {
       })
     }
 
+    updateProfileShown(){
+      this.setState({
+        profileShown: true
+      })
+    }
+
     setSpot(){
 
       var changespot = this.updateSpot;
@@ -539,43 +564,64 @@ class HomePage extends React.Component {
 ? this.distance(this.props.coords.latitude,this.props.coords.longitude,14.604608,-90.505463, "K") + " km"
 : "none"}</p>
 */}
-                           <Typography variant="subheading" align="center" gutterBottom>
 
-                               Dirección pública de Ethereum:
+                            {this.state.profileShown ? (
+                              <div>
+                              <Typography variant="subheading" align="center" gutterBottom>
+
+                                  Dirección pública de Ethereum:
 
 
 
-                           </Typography>
+                              </Typography>
 
-                           <Typography variant="body1" align="center" noWrap gutterBottom>
 
-                               {this.state.pub}
 
-                           </Typography> <br/>
 
-                           <Typography variant="subheading" align="center" gutterBottom>
+                              <Typography variant="body1" align="center" noWrap gutterBottom>
 
-                               Marrocoins tokens:
+                                  {this.state.pub}
 
-                           </Typography>
+                              </Typography> <br/>
 
-                           <Typography variant="body1" align="center" gutterBottom>
+                              <Typography variant="subheading" align="center" gutterBottom>
 
-                               {this.state.tokens + " MC"}
+                                  Marrocoins tokens:
 
-                           </Typography> <br/>
+                              </Typography>
 
-                           <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2} onClick={function(){
-                             document.getElementById("llavePriv").style.display = "block"
-                           }}> Mostrar llave privada </Button>
+                              <Typography variant="body1" align="center" gutterBottom>
 
-                           <Typography id="llavePriv" variant="body1" align="center" noWrap gutterBottom>
+                                  {this.state.tokens + " MC"}
 
-                               <br/>
+                              </Typography> <br/>
 
-                               {this.state.priv}
-                           </Typography>
 
+                              </div>
+
+                            ) : (
+                              <div>
+                              <Typography variant="title" align="center">
+
+                                   Obteniendo tu wallet de Ethereum y validando tus MarroCoins...
+
+                              </Typography>  <br/>
+
+
+                              <CircularProgress size={50} style={styles.loadingCircle} />
+                              </div>
+                            )}
+
+                            <Button  variant="outlined" size="medium" color="primary" style={styles.showKey2} onClick={function(){
+                              document.getElementById("llavePriv").style.display = "block"
+                            }}> Mostrar llave privada </Button>
+
+                            <Typography id="llavePriv" variant="body1" align="center" noWrap gutterBottom>
+
+                                <br/>
+
+                                {this.state.priv}
+                            </Typography>
                            <br/>
                           <br/>
                            <Button variant="contained" size="medium" color="primary" style={styles.buttons} onClick={this.logout}> Log Out </Button>  <br/> <br/>
@@ -819,7 +865,7 @@ function printBalance() {
     var wei = web3.utils.toWei(balance, 'ether');
     return wei;
 }
-function newlyCreated(userToken, nick){
+function newlyCreated(userToken, nick,callback){
     console.log("jalando funcion");
     var uid = userToken;
     var nickname = nick;
@@ -844,7 +890,9 @@ function newlyCreated(userToken, nick){
           }
       console.log(json);
       firstEth(function(){
-        initAccount();
+        initAccount(function(){
+          callback();
+        });
         setInfo("workaholic/cryptoHunters/"+uid, json);
       });
 
@@ -882,7 +930,7 @@ function getSpotOrder(data){
     spotList.push(
       {
           completed : 0,
-          name : 4,
+          name : 3,
           timeFinish: "",
           timeStart : "",
           tokensEarnead: 0,
@@ -892,16 +940,19 @@ function getSpotOrder(data){
     );
     return spotList;
 }
-function IsUserNew(user){
+function IsUserNew(user,callback){
     database.ref('workaholic/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
       console.log(snapshot.val());
       if(snapshot.val()==null){
         console.log("creando usuario");
-        newlyCreated(user['uid'], user['displayName']);
+        newlyCreated(user['uid'], user['displayName'],function(){
+          callback(false);
+        });
       }
       else{
         console.log("usuario ya creado");
         setAccountInfo(user['uid']);
+        callback(true);
       }
     });
 }
@@ -975,10 +1026,11 @@ function ordenEstaciones(n){
     }
     return arr;
 }
-function initAccount(){
+function initAccount(callback){
     const initAc = contract.methods.initCoins();
     callContractMethod(initAc,"init", function(valid){
       console.log("cuenta creada");
+      callback();
     });
 }
 function buyHint1(callback){
