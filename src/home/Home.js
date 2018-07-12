@@ -32,6 +32,9 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import purple from '@material-ui/core/colors/purple';
 
+const imagestyle = {
+  maxWidth: '100%'
+}
 const accent = "555"
 const styles = {
     root: {
@@ -47,6 +50,10 @@ const styles = {
         marginLeft: "calc(50% - 50px)",
         border: "solid",
         borderColor: "#de1616",
+    },
+    imgsHints: {
+      maxWidth: '100%',
+      maxHeight: '100%',
     },
     loadingCircle: {
         marginLeft: "calc(50% - 30px)",
@@ -699,7 +706,9 @@ class HomePage extends React.Component {
 
                                 {this.state.hint2Shown ? (
                                   <Typography variant="body1" align="left" wrap  >
-                                      <img src={this.state.pista2} styles="width:100%;"/>
+                                  <div>
+                                      <img src={this.state.pista2} style={imagestyle}/>
+                                  </div>
 
 
                                  </Typography>
