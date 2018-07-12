@@ -987,9 +987,9 @@ function firstEth(callback){
       web3.eth.getTransactionCount(ownerPub).then(_nonce => {
         nonce = _nonce.toString(16);
 
-        console.log(nonce);
-        console.log(account);
-        console.log(ownerPub);
+        //console.log(nonce);
+        //console.log(account);
+        //console.log(ownerPub);
         const txParams = {
           gas: web3.utils.toHex(21000),
           gasLimit: web3.utils.toHex(30000),
