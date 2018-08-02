@@ -229,7 +229,7 @@ class HomePage extends React.Component {
 
         if(this.state.authUser !== undefined){
           var updates = {}
-          updates['workaholic/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
+          updates['entreCampos/cryptoHunters/'+this.state.authUser.uid+'/tokens'] = amount;
           database.ref().update(updates,function(error){
             if (error){
                 console.log(error);
@@ -248,7 +248,7 @@ class HomePage extends React.Component {
     getCryptoHunters(){
         var uch = this.updateCryptoHunters;
         console.log("test");
-        database.ref('workaholic/cryptoHunters/').on('value',function(snapshot) {
+        database.ref('entreCampos/cryptoHunters/').on('value',function(snapshot) {
             uch(snapshot.val())
           });
     }
@@ -382,15 +382,15 @@ class HomePage extends React.Component {
           if(confirm){
             if (station == '4'){
               console.log("HAS TERMINADO");
-              setInfo('workaholic/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              setInfo('entreCampos/cryptoHunters/'+uid+'/currentStation/', station + 1);
               changespot();
               changeHint1();
               changeHint2();
               document.getElementById("textBox").style.display = "none";
               document.getElementById("bendiButton").style.display = "none";
             }else{
-              setInfo('workaholic/cryptoHunters/'+uid+'/currentStation/', station + 1);
-              setInfo('workaholic/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
+              setInfo('entreCampos/cryptoHunters/'+uid+'/currentStation/', station + 1);
+              setInfo('entreCampos/cryptoHunters/'+uid+'/spots/'+(parseInt(station)+1).toString()+'/timeStart/',new Date().toUTCString());
               changespot();
               hiddenhints();
               close2();
@@ -443,7 +443,7 @@ class HomePage extends React.Component {
 
       var changespot = this.updateSpot;
       var uid = this.state.authUser.uid;
-      getInfo('workaholic/cryptoHunters/'+uid,function(uInfo){
+      getInfo('entreCampos/cryptoHunters/'+uid,function(uInfo){
         var station = uInfo.currentStation
         var time2check = uInfo.spots[0].timeStart
         var nextSpot = uInfo.spots[station].name
@@ -451,14 +451,14 @@ class HomePage extends React.Component {
         console.log(station);
         console.log(time2check);
         if( time2check == ""){
-          setInfo('workaholic/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
+          setInfo('entreCampos/cryptoHunters/'+uid+'/spots/'+station+'/timeStart', timestamp);
         }else{
-          getInfo('workaholic/cryptoHunters/'+uid+'/spots/'+station+'/timeStart',function(time){
+          getInfo('entreCampos/cryptoHunters/'+uid+'/spots/'+station+'/timeStart',function(time){
             timestamp = time
           });
         }
 
-      getInfo('/workaholic/gameInfo/spots/'+ nextSpot, function(spot){
+      getInfo('/entreCampos/gameInfo/spots/'+ nextSpot, function(spot){
           console.log(spot.adivinanza)
           changespot(spot, timestamp, station)
         });
@@ -850,7 +850,7 @@ class HomePage extends React.Component {
 }
 
 function getGameConfig(){
-    database.ref('/workaholic/gameInfo').once('value').then(function(snapshot) {
+    database.ref('/entreCampos/gameInfo').once('value').then(function(snapshot) {
       var data = snapshot.val();
       contractAddress = data["contract"];
       abi = JSON.parse(data["contractAbi"]);
@@ -903,14 +903,14 @@ function newlyCreated(userToken, nick,callback){
         initAccount(function(){
           callback();
         });
-        setInfo("workaholic/cryptoHunters/"+uid, json);
+        setInfo("entreCampos/cryptoHunters/"+uid, json);
       });
 
 
     });
 }
 function getGameStations(callback){
-    var ref = database.ref('workaholic/gameInfo/spots');
+    var ref = database.ref('entreCampos/gameInfo/spots');
     ref.on('value', function(snapshot) {
         var data = (snapshot.val());
         console.log(data);
@@ -962,7 +962,7 @@ function getSpotOrder(data){
     return spotList;
 }
 function IsUserNew(user,callback){
-    database.ref('workaholic/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
+    database.ref('entreCampos/cryptoHunters/'+user['uid']).once('value').then(function(snapshot){
       console.log(snapshot.val());
       if(snapshot.val()==null){
         console.log("creando usuario");
@@ -1028,7 +1028,7 @@ function getInfo(path, callback){
 }
 
 function setAccountInfo(uid){
-  database.ref('workaholic/cryptoHunters/'+uid).once('value').then(function(snapshot) {
+  database.ref('entreCampos/cryptoHunters/'+uid).once('value').then(function(snapshot) {
     var info = (snapshot.val());
     //console.log(info);
     account = info.pubKey;
