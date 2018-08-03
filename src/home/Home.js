@@ -22,7 +22,6 @@ import history from '../history';
 import * as routes from '../constants/routes';
 import firebase, { provider } from '../firebase/firebase';
 import { auth, googleProvider } from '../firebase/firebase.js';
-import { geolocated } from 'react-geolocated';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -120,7 +119,7 @@ const styles = {
     },
 }
 var Web3 = require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/Ok9Gq6dRJtzU6g3CBzyf"));
+var web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/06b818c58b2f440a9b2616d1a999ef10"));
 var Tx = require('ethereumjs-tx');
 var account;
 var privKey;
@@ -199,20 +198,6 @@ class HomePage extends React.Component {
     };
 
 
-    distance(lat1, lon1, lat2, lon2, unit) {
-        var radlat1 = Math.PI * lat1/180
-        var radlat2 = Math.PI * lat2/180
-        var theta = lon1-lon2
-        var radtheta = Math.PI * theta/180
-        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        dist = Math.acos(dist)
-        dist = dist * 180/Math.PI
-        dist = dist * 60 * 1.1515
-        if (unit==="K") { dist = dist * 1.609344 }
-        if (unit==="N") { dist = dist * 0.8684 }
-
-        return dist
-      }
 
     logout(){
         console.log("logout");
@@ -359,25 +344,11 @@ class HomePage extends React.Component {
         var changespot = this.setSpot;
         var hiddenhints = this.hidehints;
 
-        //pasar KM a metros
-        var dist_diff = this.distance(this.props.coords.latitude, this.props.coords.longitude, this.state.latitud, this.state.longitud)*1000;
-        console.log(dist_diff);
-        var trunc_dist;
-        //si esta a 45m del punto
-        if (dist_diff <= 45){
-            //truncar la dist a 7 marufiasabrosa
-            trunc_dist = 7;
-        }
-        else {
-            //a 15 paque no sea vergas
-            trunc_dist = 7;
-        }
-        console.log(trunc_dist);
+
         //cambien parametro en funcion pls
 
 
-        console.log('aaaaaaaa');
-        gradeAnswer(answerUsuario, code, time, trunc_dist, function(confirm){
+        gradeAnswer(answerUsuario, code, time, function(confirm){
 
           if(confirm){
             if (station == '4'){
@@ -399,7 +370,7 @@ class HomePage extends React.Component {
             close2();
             document.getElementById("consulta").innerHTML = "";
           }else{
-            document.getElementById("consulta").innerHTML = "transaccion fallida, codigo erroneo";
+            document.getElementById("consulta").innerHTML = "transaccion fallida";
             close2();
           }
 
@@ -426,8 +397,6 @@ class HomePage extends React.Component {
         pista1: spot.hint1,
         pista2: spot.hint2,
         codigo: spot.codigo,
-        latitud: spot.latitud,
-        longitud: spot.longitud,
         nombre: spot.nombre,
         time: timestamp
       })
@@ -490,10 +459,15 @@ class HomePage extends React.Component {
         var changeHint1 = this.updateHint1;
         var close2 = this.handleClose2;
         buyHint1(function(value){
-        console.log('mostrar hint 1');
-        changeHint1();
-        document.getElementById("consulta").innerHTML = ""
-        close2();
+          console.log('mostrar hint 1');
+          if(value){
+            changeHint1();
+            document.getElementById("consulta").innerHTML = ""
+          }
+          else{
+            document.getElementById("consulta").innerHTML = "transaccion fallida";
+          }
+          close2();
       });
     }
 
@@ -503,10 +477,15 @@ class HomePage extends React.Component {
         var changeHint2 = this.updateHint2;
         var close2 = this.handleClose2;
         buyHint2(function(value){
-        console.log('mostrar hint 2');
-        changeHint2();
-        document.getElementById("consulta").innerHTML = ""
-        close2();
+          console.log('mostrar hint 2');
+          if(value){
+            changeHint2();
+            document.getElementById("consulta").innerHTML = ""
+          }
+          else{
+            document.getElementById("consulta").innerHTML = "transaccion fallida";
+          }
+          close2();
       });
     }
 
@@ -559,19 +538,7 @@ class HomePage extends React.Component {
 
                            </Typography>  <br/>
 
-                           {/*
-                           {!this.props.isGeolocationAvailable ? <div>Your browser does not support Geolocation</div> :
-                           !this.props.isGeolocationEnabled ? <div>Geolocation is not enabled</div> : this.props.coords
-                           ?
-                           <div>
-                           <p>{this.props.coords.latitude}</p>
-                           <p>{this.props.coords.longitude}</p>
-                           </div>
-                             : <div>Getting the location data&hellip; </div>}
-                           <p>Test distancia Escuela Negocios: {this.props.coords
-? this.distance(this.props.coords.latitude,this.props.coords.longitude,14.604608,-90.505463, "K") + " km"
-: "none"}</p>
-*/}
+
 
                             {this.state.profileShown ? (
                               <div>
@@ -990,16 +957,16 @@ function firstEth(callback){
 
         //console.log(nonce);
         //console.log(account);
-        //console.log(ownerPub);
+        //console.log("Sending first Eth");
         const txParams = {
           gas: web3.utils.toHex(21000),
           gasLimit: web3.utils.toHex(30000),
           gasPrice: web3.utils.toHex(estimatedGas),
           to: account,
           from: ownerPub,
-          value: web3.utils.toHex(web3.utils.toWei('0.3', 'ether')),
+          value: web3.utils.toHex(web3.utils.toWei('0.1', 'ether')),
           nonce: '0x' + nonce,
-          chainId: web3.utils.toHex(3)
+          chainId: web3.utils.toHex(4)
         };
 
         const tx = new Tx(txParams);
@@ -1076,6 +1043,7 @@ function callContractMethod(contractFunction, methType, callback){
     console.log("Getting gas estimate");
     let conf = false;
     web3.eth.getGasPrice().then((gasAmount) => {
+      console.log(gasAmount);
       estimatedGas = gasAmount.toString(16);
       console.log(gasAmount);
       console.log("Estimated gas: " + estimatedGas);
@@ -1091,7 +1059,7 @@ function callContractMethod(contractFunction, methType, callback){
           data: functionAbi,
           from: account,
           nonce: '0x' + nonce,
-          chainId: web3.utils.toHex(3)
+          chainId: web3.utils.toHex(4)
         };
 
         const tx = new Tx(txParams);
@@ -1102,22 +1070,29 @@ function callContractMethod(contractFunction, methType, callback){
         .on('receipt', function(receipt){
           console.log(receipt);
           callback(true);
+        })
+        .on('error',function(error){
+          console.log(error);
+          callback(false);
         });
       });
     });
 
 }
-function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
+function gradeAnswer(answerUsuario, answerCorrecta, time, callback){
   console.log(answerUsuario)
   console.log(answerCorrecta)
   console.log(time)
-  console.log(distance)
+
   document.getElementById("consulta").innerHTML = "...consultando al blockchain...";
-	if(answerUsuario===answerCorrecta & distance < 9){
+	if(answerUsuario===answerCorrecta){
     console.log("acepto")
 		reward(time, 9, function(confirm){
       console.log(confirm);
       if(confirm){
+        callback(confirm);
+      }
+      else{
         callback(confirm);
       }
     });
@@ -1129,17 +1104,10 @@ function gradeAnswer(answerUsuario, answerCorrecta, time, distance, callback){
 }
 function reward(time, distance, callback){
     const reward = contract.methods.recompensa(time, distance);
-    callContractMethod(reward, "reward" ,function(confirm){
-      if(confirm){
-        callback(confirm);
-      }
+    callContractMethod(reward, "reward" , function(confirm){
+      console.log(confirm);
+      callback(confirm);
     });
 }
 
-export default geolocated({
-  positionOptions: {
-    enableHighAccuracy: false,
-  },
-  watchPosition: true,
-userDecisionTimeout: 5000,
-})(HomePage);
+export default HomePage;
